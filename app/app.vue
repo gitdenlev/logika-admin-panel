@@ -1,0 +1,11 @@
+<script setup lang="ts">
+import { Toaster } from '@/components/ui/sonner';
+import 'vue-sonner/style.css';
+</script>
+
+<template>
+  <div>
+    <NuxtPage /> 
+    <Toaster richColors :expand="true" />
+  </div>
+</template>
