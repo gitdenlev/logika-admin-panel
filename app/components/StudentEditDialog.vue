@@ -13,8 +13,6 @@ import Input from "@/components/ui/input/Input.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { useSupabaseClient } from "#imports";
 
-import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
-
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -110,12 +108,14 @@ async function handleSave() {
 // Замість прямого видалення, відкриваємо діалог підтвердження
 const requestDeleteConfirmation = () => {
   showConfirmDeleteDialog.value = true;
+  // Тимчасово закриваємо основний діалог
+  emit("update:modelValue", false);
 };
 
 // Функція, яка буде викликана після підтвердження в ConfirmDeleteDialog
 async function confirmDelete() {
   if (!localStudent.value) {
-    closeDialog(); // Закриваємо обидва діалоги
+    showConfirmDeleteDialog.value = false;
     return;
   }
 
@@ -138,7 +138,8 @@ async function confirmDelete() {
       },
     });
     emit("student-deleted");
-    closeDialog(); // Закриваємо обидва діалоги
+    showConfirmDeleteDialog.value = false; // Закриваємо діалог підтвердження
+    closeDialog(); // Закриваємо основний діалог
   } catch (error) {
     console.error("Помилка видалення учня:", error.message);
     toast.error(`Помилка видалення: ${error.message}`);
@@ -147,7 +148,7 @@ async function confirmDelete() {
   }
 }
 
-// Обробка видимості основного діалогу
+// Обробка видимості основного діалогу  
 const showDialog = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -201,7 +202,8 @@ const showDialog = computed({
         <Button
           type="button"
           variant="destructive"
-          @click="requestDeleteConfirmation" :disabled="deleteLoading"
+          @click="requestDeleteConfirmation" 
+          :disabled="deleteLoading"
           class="cursor-pointer sm:order-first"
         >
           <span v-if="deleteLoading">Видалення...</span>
@@ -228,5 +230,6 @@ const showDialog = computed({
     :isLoading="deleteLoading"
     @confirm="confirmDelete"
     @cancel="showConfirmDeleteDialog = false"
+    style="z-index: 9999;"
   />
 </template>

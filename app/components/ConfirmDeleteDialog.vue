@@ -55,7 +55,7 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <Dialog class="bg-red-500" v-model:open="showDialog" @update:open="closeDialog">
+  <Dialog v-model:open="showDialog" @update:open="closeDialog">
     <DialogContent class="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>{{ title }}</DialogTitle>
