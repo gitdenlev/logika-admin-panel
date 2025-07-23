@@ -94,12 +94,20 @@ async function handleSave() {
       throw error;
     }
 
-    toast.success("Дані учня успішно оновлено");
+    toast.success("Дані учня успішно оновлено"), {
+      style: {
+        border: "none",
+      },
+    };
     emit("student-updated");
     closeDialog();
   } catch (error) {
     console.error("Помилка оновлення учня:", error.message);
-    toast.error(`Помилка оновлення: ${error.message}`);
+    toast.error(`Помилка оновлення: ${error.message}`, {
+      style: {
+        border: "none",
+      },
+    });
   } finally {
     saveLoading.value = false;
   }
@@ -142,7 +150,11 @@ async function confirmDelete() {
     closeDialog(); // Закриваємо основний діалог
   } catch (error) {
     console.error("Помилка видалення учня:", error.message);
-    toast.error(`Помилка видалення: ${error.message}`);
+    toast.error(`Помилка видалення: ${error.message}`, {
+      style: {
+        border: "none",
+      },
+    });
   } finally {
     deleteLoading.value = false;
   }

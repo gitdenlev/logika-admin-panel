@@ -74,6 +74,9 @@ async function addNewStudentToDb() {
     // Використовуйте toast.error для відображення помилки
     toast.error("Помилка при додаванні учня", {
       description: errorData.message || err.message || "Не вдалося додати учня",
+      style: {
+        border: "none",
+      },
     });
   } finally {
     isAddingStudent.value = false;
