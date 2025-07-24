@@ -1,6 +1,5 @@
 <script setup>
 import Input from "@/components/ui/input/Input.vue";
-import { computed } from "vue";
 
 const props = defineProps({
   searchTerm: String,

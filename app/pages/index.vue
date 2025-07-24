@@ -149,22 +149,16 @@ const handleStudentDataChanged = () => {
     </div>
 
     <div v-else>
-      <div
-        class="flex items-center justify-between sticky top-0 z-20 p-2 bg-white/60 backdrop-blur-lg shadow-xl backdrop-saturate-200"
-      >
-        <h1 class="text-gray-700 font-semibold flex-shrink-0">
+      <div class="flex items-center justify-between sticky top-0 z-20 p-2 bg-white/60 backdrop-blur-lg shadow-xl backdrop-saturate-200">
+
+        <h1 class="text-gray-700">
           Всього учнів: {{ students.length }}
         </h1>
         <StudentControls
-          v-model:search-term="searchTerm"
-          v-model:modelValueSelectedCourse="selectedCourse"
-          v-model:modelValueSelectedGroup="selectedGroup"
-          :unique-courses="uniqueCourses"
-          :available-groups-for-selected-course="
-            availableGroupsForSelectedCourse
-          "
-          @add-student="handleStudentAdded"
-        />
+        v-model:search-term="searchTerm"
+        v-model:selected-course="selectedCourse"
+        @student-added="handleStudentAdded"
+      />
       </div>
 
       <StudentTable
