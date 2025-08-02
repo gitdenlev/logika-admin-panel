@@ -1,11 +1,20 @@
-import { serverSupabaseClient } from "#supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 export default defineEventHandler(async (event) => {
   try {
-    // ВАЖЛИВО: serverSupabaseClient повертає Promise, тому потрібен await
-    const client = await serverSupabaseClient(event);
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // Виконуємо запит до бази даних
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error(
+        "Supabase URL or Service Role Key not set in environment variables"
+      );
+    }
+
+    const client = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { persistSession: false },
+    });
+
     const { data, error } = await client.from("students").select("*");
 
     if (error) {
@@ -20,12 +29,9 @@ export default defineEventHandler(async (event) => {
     return data || [];
   } catch (err) {
     console.error("Помилка сервера при отриманні студентів:", err);
-
-    // Якщо це вже createError помилка
     if (err.statusCode) {
       throw err;
     }
-
     throw createError({
       statusCode: 500,
       statusMessage: "Невідома помилка сервера",

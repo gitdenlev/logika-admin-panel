@@ -124,6 +124,18 @@ async function addNewStudentToDb() {
           v-model="newStudentLogin"
           class="col-span-4"
         />
+        <!-- <Input
+          placeholder="День"
+          id="newStudentLogin"
+          v-model="newStudentLogin"
+          class="col-span-4"
+        /> -->
+        <!-- <Input
+          placeholder="Час"
+          id="newStudentLogin"
+          v-model="newStudentLogin"
+          class="col-span-4"
+        /> -->
       </div>
 
       <DialogFooter>

@@ -23,7 +23,7 @@ const props = defineProps({
   studentsCount: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 const emit = defineEmits(["student-data-changed"]); // Подія, коли дані учня оновилися/видалилися
@@ -47,9 +47,7 @@ const handleStudentDataChanged = () => {
 <template>
   <div v-if="fetchError" class="text-red-500 mb-4">
     Помилка завантаження даних:
-    {{
-      fetchError.statusMessage || fetchError.message || "Невідома помилка"
-    }}
+    {{ fetchError.statusMessage || fetchError.message || "Невідома помилка" }}
   </div>
 
   <Table v-else-if="filteredStudents.length > 0" class="w-full">
@@ -59,6 +57,7 @@ const handleStudentDataChanged = () => {
         <TableHead class="text-white">Учень</TableHead>
         <TableHead class="text-white">Курс</TableHead>
         <TableHead class="text-white">Логін</TableHead>
+        <TableHead class="text-white">Час</TableHead>
         <TableHead class="text-right text-white">Баланс</TableHead>
       </TableRow>
     </TableHeader>
@@ -67,13 +66,28 @@ const handleStudentDataChanged = () => {
         v-for="student in filteredStudents"
         :key="student.id"
         class="cursor-pointer hover:bg-zinc-200 transition-colors duration-200"
-        @click="openEditDialog(student)" >
+        @click="openEditDialog(student)"
+      >
         <TableCell class="font-medium">{{ student.id }}</TableCell>
         <TableCell>{{ student.student_name }}</TableCell>
         <TableCell>{{ student.student_course }}</TableCell>
         <TableCell>{{ student.student_login }}</TableCell>
-        <TableCell class="text-right">
-          {{ student.student_balance }}
+        <TableCell>{{ student.student_schedule }}</TableCell>
+        <TableCell
+          class="text-right leading-tight"
+          :data-updated-at="student.updated_at"
+        >
+          <div>
+            {{ student.student_balance }}
+            <span
+              class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2"
+            >
+              ✓ Оцінено
+            </span>
+          </div>
+          <div class="text-xs text-gray-500 mt-1">
+            26/07/2025
+          </div>
         </TableCell>
       </TableRow>
     </TableBody>

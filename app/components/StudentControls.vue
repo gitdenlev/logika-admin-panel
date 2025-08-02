@@ -28,15 +28,23 @@ const handleStudentAdded = () => {
 </script>
 
 <template>
-  <div class="flex items-center gap-5 justify-end mb-3">
-    <FormAddNewStudent @student-added="handleStudentAdded" />
-    <Input
-      placeholder="Знайти учня..."
-      v-model="internalSearchTerm"
-      class="w-[300px]"
-      icon="stash:search-solid"
-    />
-    <SelectCourse v-model="internalSelectedCourse" />
-    <SignOutButton />
+  <div class="flex flex-col gap-5 mb-3">
+    <div class="flex items-center gap-3">
+      <FormAddNewStudent @student-added="handleStudentAdded" />
+      <Input
+        placeholder="Знайти учня..."
+        v-model="internalSearchTerm"
+        class="w-[300px]"
+        icon="stash:search-solid"
+      />
+      <SignOutButton />
+    </div>
+
+    <div class="flex items-center justify-between flex-wrap gap-5">
+      <div class="flex items-center gap-5">
+        <SelectCourse v-model="internalSelectedCourse" />
+        <SelectSchedule />
+      </div>
+    </div>
   </div>
 </template>
