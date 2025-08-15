@@ -3,13 +3,13 @@
     <Button
       @click="isDrawerOpen = true"
       variant="ghost"
-      class="rounded-full w-12 h-12 p-0 text-gray-700 dark:text-gray-300 shadow-md bg-white dark:bg-gray-800"
+      class="rounded-full w-12 h-12 p-0 text-gray-700 dark:text-gray-300 shadow-md bg-white dark:bg-gray-800 transition-colors duration-200"
     >
       <Icon name="lucide:menu" size="25" />
     </Button>
 
     <Drawer v-model:open="isDrawerOpen">
-      <DrawerContent class="h-full w-full rounded-r-lg rounded-t-none">
+      <DrawerContent class="h-full w-full rounded-r-lg rounded-t-none bg-white dark:bg-gray-800 transition-colors duration-200">
         <div class="px-4 flex flex-col h-full bg-white dark:bg-gray-800">
           <div class="mt-4 space-y-2 flex-1">
             <NuxtLink
@@ -42,7 +42,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-// Компоненти, які потрібно імпортувати, наприклад, з Shadcn-vue або аналогічної бібліотеки
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
@@ -60,7 +59,7 @@ const sidebarItems = [
   {
     title: "Досягнення",
     link: "/student/achievement",
-    icon: "octicon:goal-16", // Іконка, що асоціюється з магазином
+    icon: "octicon:goal-16",
   },
   {
     title: "Армія",

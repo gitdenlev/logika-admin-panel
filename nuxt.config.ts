@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from 'vite-tsconfig-paths';
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/color-mode",
   ],
+  colorMode: {
+    classSuffix: "",
+  },
   css: ["~/assets/css/tailwind.css"],
   vite: {
     plugins: [tailwindcss(), tsconfigPaths()],
@@ -23,6 +26,6 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: "/login",
       exclude: ["/login"],
-    }
+    },
   },
 });

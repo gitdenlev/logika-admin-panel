@@ -1,9 +1,11 @@
 <template>
-  <div class="flex min-h-screen font-sans bg-gray-100 text-gray-800">
+  <!-- ВИПРАВЛЕНО: Додано підтримку темної теми для лайауту -->
+  <div class="flex min-h-screen font-sans bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
     <MobileSidebar />
     <Sidebar />
 
-    <main class="flex-1 p-8 overflow-y-auto">
+    <!-- ВИПРАВЛЕНО: Головний контейнер також має підтримувати теми -->
+    <main class="flex-1 p-8 overflow-y-auto bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <slot />
     </main>
   </div>
@@ -71,5 +73,7 @@ async function signOut() {
 </script>
 
 <style scoped>
-/* Додаткові стилі, якщо потрібні */
+* {
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
 </style>

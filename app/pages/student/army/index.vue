@@ -1,32 +1,36 @@
 <template>
   <NuxtLayout>
-    <div class="min-h-screen font-sans">
+    <div
+      class="min-h-screen font-sans bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+    >
       <div>
         <div class="relative overflow-hidden w-full">
           <h3
-            class="sm:text-2xl font-bold text-gray-600 flex flex-col sm:flex-row items-start sm:items-center gap-2"
+            class="sm:text-2xl font-bold text-gray-600 dark:text-gray-200 flex flex-col sm:flex-row items-start sm:items-center gap-2 transition-colors duration-200"
           >
             <span>Наш внесок у допомогу ЗСУ</span>
           </h3>
-          <p class="text-xs sm:text-sm text-gray-600 mt-1 italic">
+          <p
+            class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 italic transition-colors duration-200"
+          >
             Разом допомагаємо нашим захисникам
           </p>
 
           <div class="mt-4">
             <p
-              class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-gray-600 text-lg sm:text-xl font-bold mb-2"
+              class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-gray-600 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2 transition-colors duration-200"
             >
               <span>Зібрано:</span>
               <span class="flex items-center gap-2">
                 <span ref="pointsCounter">0</span>
-                <span class="text-gray-500"
+                <span class="text-gray-500 dark:text-gray-400 transition-colors duration-200"
                   >із {{ donationGoal }}</span
                 >
               </span>
             </p>
 
             <div
-              class="w-full bg-gray-300 rounded-full h-3 sm:h-4 mb-4 overflow-hidden"
+              class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-3 sm:h-4 mb-4 overflow-hidden transition-colors duration-200"
             >
               <div
                 ref="progressBar"
@@ -38,16 +42,18 @@
               ></div>
             </div>
 
-            <p class="text-gray-500 text-xs sm:text-sm">Загальна сума</p>
+            <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm transition-colors duration-200">
+              Загальна сума
+            </p>
             <p
-              class="text-[#7B68EE] font-bold text-2xl sm:text-3xl mt-1 flex items-center gap-2"
+              class="text-[#7B68EE] dark:text-[#8B7EFF] font-bold text-2xl sm:text-3xl mt-1 flex items-center gap-2 transition-colors duration-200"
             >
               <span ref="moneyCounter">0</span> грн
             </p>
           </div>
           <div>
             <div
-              class="flex flex-col sm:flex-row sm:items-center gap-1 text-gray-500 text-xs mb-4 mt-2"
+              class="flex flex-col sm:flex-row sm:items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mb-4 mt-2 transition-colors duration-200"
             >
               <span class="flex items-center gap-1">
                 1 <NuxtImg src="/lgk.svg" width="10" /> = 1.5₴
@@ -75,10 +81,10 @@
     :open="isDonationDialogOpen"
     @update:open="isDonationDialogOpen = $event"
   >
-    <DialogContent class="w-auto">
+    <DialogContent class="w-[300px] bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors duration-200 border border-gray-200 dark:border-gray-700">
       <DialogHeader>
         <div
-          class="flex mx-auto justify-center gap-1 text-sm text-gray-500 mt-2 rounded-full px-2 py-1 bg-[#7B68EE]/30 w-fit"
+          class="flex mx-auto justify-center gap-1 text-sm text-gray-500 dark:text-gray-300 mt-2 rounded-full px-2 py-1 bg-[#7B68EE]/30 dark:bg-[#8B7EFF]/30 w-fit transition-colors duration-200"
         >
           <span class="flex items-center gap-1">
             Доступно: {{ studentProfile?.student_balance || 0 }}
@@ -88,7 +94,7 @@
       </DialogHeader>
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="donation-amount" class="text-right"> Сума </Label>
+          <Label for="donation-amount" class="text-right text-gray-600 dark:text-gray-300 transition-colors duration-200"> Сума </Label>
           <Input
             id="donation-amount"
             v-model.number="donationAmount"
@@ -96,13 +102,13 @@
             :max="studentProfile?.student_balance || 0"
             :min="1"
             placeholder="0"
-            class="col-span-3"
+            class="col-span-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-50 transition-colors duration-200"
           />
         </div>
 
         <p
           v-if="donationAmount > (studentProfile?.student_balance || 0)"
-          class="text-sm text-red-500 text-center"
+          class="text-sm text-red-500 dark:text-red-400 text-center"
         >
           Недостатньо балів на вашому рахунку
         </p>
@@ -110,7 +116,7 @@
       <DialogFooter>
         <DialogClose as-child>
           <Button
-            class="cursor-pointer bg-gray-300 hover:bg-gray-300/90"
+            class="cursor-pointer bg-gray-300 dark:bg-gray-600 hover:bg-gray-300/90 dark:hover:bg-gray-700/90 text-gray-600 dark:text-gray-200 transition-colors duration-200"
             type="button"
             variant="secondary"
           >
@@ -119,12 +125,12 @@
         </DialogClose>
         <Button
           :class="{
-            'bg-gray-300 text-gray-500 cursor-not-allowed':
+            'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400':
               !donationAmount ||
               donationAmount <= 0 ||
               donationAmount > (studentProfile?.student_balance || 0) ||
               isProcessing,
-            'cursor-pointer bg-[#7B68EE] hover:bg-[#7B68EE]/90 text-white':
+            'cursor-pointer bg-[#7B68EE] hover:bg-[#7B68EE]/90 text-white dark:bg-[#8B7EFF] dark:hover:bg-[#8B7EFF]/90':
               donationAmount &&
               donationAmount > 0 &&
               donationAmount <= (studentProfile?.student_balance || 0) &&
@@ -164,10 +170,8 @@ import { gsap } from "gsap";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

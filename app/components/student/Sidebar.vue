@@ -1,5 +1,7 @@
 <template>
-  <aside class="hidden sticky top-0 lg:flex flex-col bg-white text-gray-800 h-screen w-1/5 shadow-lg">
+  <aside
+    class="hidden sticky top-0 lg:flex flex-col bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 h-screen w-1/5 shadow-lg dark:shadow-gray-950/50 transition-colors duration-200"
+  >
     <nav class="flex-1 py-6">
       <ul class="space-y-3 px-4">
         <li v-for="(item, index) in sidebarItems" :key="index">
@@ -8,13 +10,12 @@
             class="group flex items-center gap-2 text-[16px] rounded-full h-[48px] px-4 border-4 transition-colors duration-200 ease-in-out"
             :class="[
               isActive(item.link)
-                ? 'bg-[#E5E7EB] text-[#151617] shadow-lg border-transparent'
-                : 'border-transparent text-[#6B7280] hover:bg-[#F3F4F6] hover:text-[#374151] hover:shadow-md'
+                ? 'bg-[#E5E7EB] dark:bg-gray-700 text-[#151617] dark:text-gray-50 shadow-lg border-transparent'
+                : 'border-transparent text-[#6B7280] dark:text-gray-400 hover:bg-[#F3F4F6] dark:hover:bg-gray-700/50 hover:text-[#374151] dark:hover:text-gray-50 hover:shadow-md dark:hover:shadow-gray-900'
             ]"
           >
             <div
               class="w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 ease-in-out"
-              
             >
               <Icon :name="item.icon" size="25" />
             </div>
@@ -38,36 +39,35 @@ const sidebarItems = [
   {
     title: "Дашборд",
     link: "/",
-    icon: "material-symbols:grid-view-rounded", // Змінено на більш відповідну іконку
+    icon: "material-symbols:grid-view-rounded",
   },
   {
     title: "Транзакції",
-    link: "/student/transactions", // Змінено link на більш точну назву
-    icon: "ant-design:swap-outlined", // Іконка, що асоціюється з обміном/переказом
+    link: "/student/transactions",
+    icon: "ant-design:swap-outlined",
   },
   {
     title: "Вішліст",
     link: "/student/wishlist",
-    icon: "ph:heart-fill", // Іконка "списку бажань"
+    icon: "ph:heart-fill",
   },
   {
     title: "Магазин",
     link: "/student/store",
-    icon: "lucide:shopping-bag", // Іконка, що асоціюється з магазином
+    icon: "lucide:shopping-bag",
   },
   {
     title: "Досягнення",
     link: "/student/achievement",
-    icon: "octicon:goal-16", // Іконка, що асоціюється з магазином
+    icon: "octicon:goal-16",
   },
   {
     title: "Армія",
     link: "/student/army",
-    icon: "fluent-emoji-high-contrast:military-helmet", // Іконка, що асоціюється з військовою тематикою
+    icon: "fluent-emoji-high-contrast:military-helmet",
   },
 ];
 
-// Функція для перевірки активного посилання
 const route = useRoute();
 const isActive = (link: string) => {
   return route.path === link;

@@ -1,9 +1,15 @@
 <template>
   <NuxtLayout>
-    <div class="min-h-screen bg-gray-100 text-gray-800 font-sans">
+    <div
+      class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans transition-colors duration-200"
+    >
       <div class="flex justify-end items-center mb-8">
         <div class="flex items-center justify-end gap-2">
-          <p class="text-gray-600 font-bold text-xl">{{ studentBalance }}</p>
+          <p
+            class="text-gray-600 dark:text-gray-300 font-bold text-xl transition-colors duration-200"
+          >
+            {{ studentBalance }}
+          </p>
           <NuxtImg src="/lgk.svg" width="20" />
         </div>
       </div>
@@ -12,14 +18,18 @@
         <div
           v-for="(product, index) in products"
           :key="index"
-          class="bg-white rounded-2xl p-6 shadow-xl flex flex-col justify-between"
+          class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl dark:shadow-gray-900/20 flex flex-col justify-between transition-colors duration-200 border border-gray-200 dark:border-gray-700"
         >
           <div
-            class="relative mb-4 flex justify-center items-center h-40 bg-gray-100 rounded-xl"
+            class="relative mb-4 flex justify-center items-center h-40 bg-gray-100 dark:bg-gray-700 rounded-xl transition-colors duration-200"
           >
-            <Icon :name="product.icon" size="60" class="text-[#7B68EE]" />
+            <Icon
+              :name="product.icon"
+              size="60"
+              class="text-[#7B68EE] dark:text-[#8B7EFF] transition-colors duration-200"
+            />
             <div
-              class="absolute top-3 right-3 flex items-center justify-center w-12 h-12 bg-[#7B68EE] text-white font-bold text-sm rounded-full shadow-lg"
+              class="absolute top-3 right-3 flex items-center justify-center w-12 h-12 bg-[#7B68EE] dark:bg-[#8B7EFF] text-white font-bold text-sm rounded-full shadow-lg transition-colors duration-200"
             >
               {{ product.price }}
             </div>
@@ -27,10 +37,16 @@
 
           <div class="flex-1 flex flex-col justify-between">
             <div>
-              <h3 class="text-xl font-bold text-gray-800 mb-2">
+              <h3
+                class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-200"
+              >
                 {{ product.name }}
               </h3>
-              <p class="text-gray-500 mb-4">{{ product.description }}</p>
+              <p
+                class="text-gray-500 dark:text-gray-400 mb-4 transition-colors duration-200"
+              >
+                {{ product.description }}
+              </p>
             </div>
 
             <div class="mt-4">
@@ -38,11 +54,11 @@
                 @click="addToWishlist(product)"
                 class="w-full font-bold py-3 rounded-xl transition duration-300 flex justify-center items-center gap-2"
                 :class="{
-                  'bg-green-200 text-green-800 cursor-not-allowed':
+                  'bg-green-200 dark:bg-green-600/30 text-green-800 dark:text-green-300 cursor-not-allowed':
                     product.isInWishlist,
-                  'bg-gray-200 hover:bg-gray-300 text-gray-700 cursor-pointer':
+                  'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-pointer':
                     !product.isInWishlist && product.price <= studentBalance,
-                  'border-2 border-dashed border-gray-300 text-gray-400 cursor-not-allowed':
+                  'border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed':
                     !product.isInWishlist && product.price > studentBalance,
                 }"
                 :disabled="
