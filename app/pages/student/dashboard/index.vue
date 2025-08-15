@@ -32,12 +32,12 @@
             </div>
             <div class="text-right">
               <p
-                class="text-sm font-semibold text-gray-600 text-left mt-2 lg:mt-0"
+                class="text-sm font-semibold text-gray-600 text-left mt-4 lg:mt-0"
               >
                 Твоє місце в рейтингу:
               </p>
               <p
-                class="rounded-full bg-[#7B68EE] text-xl text-white px-4 py-1 inline-block mt-1"
+                class="rounded-full bg-[#7B68EE] float-left text-xl text-white px-4 py-1 inline-block mt-1"
               >
                 #{{ studentProfile.rank }}
               </p>
@@ -125,7 +125,7 @@
               Твій внесок складає:
               <span class="flex items-center gap-1 text-[#7B68EE] text-2xl"
                 >{{ armyDonation.current }}
-                <NuxtImg src="/lgk.svg" width="17"
+                <NuxtImg src="/lgk.svg" width="20"
               /></span>
             </p>
 

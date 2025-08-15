@@ -6,7 +6,7 @@
       <div class="bg-white rounded-3xl p-8 shadow-xl max-w-lg w-full">
         <div class="flex items-center justify-center gap-4 mb-8">
           <Icon
-            name="fluent-emoji-high-contrast:building-construction"
+            name="emojione:construction"
             size="90"
             class="text-gray-400"
           />

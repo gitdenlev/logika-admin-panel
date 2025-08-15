@@ -212,7 +212,7 @@ const getModeName = (mode: string) => {
 
         <DropdownMenuItem @click="goToHelp" class="flex items-center gap-2 px-2 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md cursor-pointer transition-colors duration-200">
           <Icon name="ion:help-circle-outline" size="20" class="text-gray-600 dark:text-gray-400" />
-          <span>Допомога</span>
+          <NuxtLink target="_blank" to="https://t.me/denyalove">Допомога</NuxtLink>
         </DropdownMenuItem>
         
         <DropdownMenuItem @click="handleLogout" class="flex items-center gap-2 px-2 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md cursor-pointer transition-colors duration-200">
