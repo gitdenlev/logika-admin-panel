@@ -59,6 +59,7 @@ const handleStudentDataChanged = () => {
         <TableHead class="text-white">Логін</TableHead>
         <TableHead class="text-white">Час</TableHead>
         <TableHead class="text-right text-white">Баланс</TableHead>
+        <TableHead class="text-right text-white">Статус</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody class="bg-zinc-100">
@@ -77,18 +78,16 @@ const handleStudentDataChanged = () => {
           class="text-right leading-tight"
           :data-updated-at="student.updated_at"
         >
-          <div>
-            {{ student.student_balance }}
-            <span
-              class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2"
-            >
-              ✓ Оцінено
-            </span>
-          </div>
-          <div class="text-xs text-gray-500 mt-1">
-            26/07/2025
-          </div>
+          {{ student.student_balance }}
         </TableCell>
+        <TableCell class="text-right">
+          <span
+            class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2"
+          >
+            ✓ Оцінено
+          </span>
+          <div class="text-xs text-gray-500 mt-1">26/07/2025</div></TableCell
+        >
       </TableRow>
     </TableBody>
   </Table>

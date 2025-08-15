@@ -151,14 +151,15 @@ const handleStudentDataChanged = () => {
     <div v-else>
       <div class="flex items-center justify-between sticky top-0 z-20 p-2 bg-white/60 backdrop-blur-lg shadow-xl backdrop-saturate-200">
 
-        <h1 class="text-gray-700">
-          Всього учнів: {{ students.length }}
-        </h1>
+        
         <StudentControls
         v-model:search-term="searchTerm"
         v-model:selected-course="selectedCourse"
         @student-added="handleStudentAdded"
       />
+      <h1 class="text-gray-700">
+          Всього учнів: {{ students.length }}
+        </h1>
       </div>
 
       <StudentTable

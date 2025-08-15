@@ -1,11 +1,22 @@
-import { serverSupabaseClient } from "#supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 export default defineEventHandler(async (event) => {
   try {
-    const client = await serverSupabaseClient(event); // Отримуємо клієнт Supabase
-    const studentData = await readBody(event); // Отримуємо дані про студента з тіла POST-запиту
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // Перевірка на наявність даних
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error(
+        "Supabase URL or Service Role Key not set in environment variables"
+      );
+    }
+
+    const client = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { persistSession: false },
+    });
+
+    const studentData = await readBody(event);
+
     if (
       !studentData ||
       !studentData.student_name ||
@@ -17,11 +28,10 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Додаємо нового студента до таблиці 'students'
     const { data, error } = await client
       .from("students")
       .insert([studentData])
-      .select(); // Повертаємо доданий запис
+      .select();
 
     if (error) {
       console.error("Помилка Supabase при додаванні студента:", error);
@@ -32,12 +42,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    return { message: "Студент успішно доданий!", student: data[0] }; // Повертаємо успішне повідомлення та доданого студента
+    return { message: "Студент успішно доданий!", student: data[0] };
   } catch (err: any) {
     console.error("Помилка сервера при додаванні студента:", err);
 
     if (err.statusCode) {
-      throw err; // Прокидаємо помилку, якщо вона вже створена через createError
+      throw err;
     }
 
     throw createError({

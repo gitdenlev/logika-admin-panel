@@ -1,13 +1,14 @@
-<script setup>
+<script setup lang="ts">
+import { computed } from "vue";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
+import SelectTrigger from "@/components/ui/select/SelectTrigger.vue"; // Оновлений імпорт компонента
+import SelectValue from "@/components/ui/select/SelectValue.vue";
 
 const props = defineProps({
   modelValue: {
@@ -26,8 +27,8 @@ const selectedCourse = computed({
 
 <template>
   <Select v-model="selectedCourse">
-    <SelectTrigger>
-      <SelectValue placeholder="Фільтр за курсом" />
+    <SelectTrigger icon="icomoon-free:books" placeholder="Фільтр за курсом">
+      <SelectValue />
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>

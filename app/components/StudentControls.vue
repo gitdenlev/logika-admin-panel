@@ -28,7 +28,7 @@ const handleStudentAdded = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5 mb-3">
+  <div class="flex items-center gap-3">
     <div class="flex items-center gap-3">
       <FormAddNewStudent @student-added="handleStudentAdded" />
       <Input
@@ -37,14 +37,11 @@ const handleStudentAdded = () => {
         class="w-[300px]"
         icon="stash:search-solid"
       />
-      <SignOutButton />
     </div>
-
-    <div class="flex items-center justify-between flex-wrap gap-5">
-      <div class="flex items-center gap-5">
-        <SelectCourse v-model="internalSelectedCourse" />
-        <SelectSchedule />
-      </div>
+    <div class="flex items-center gap-3">
+      <SelectCourse v-model="internalSelectedCourse" />
+      <SelectSchedule />
     </div>
+    <SignOutButton />
   </div>
 </template>

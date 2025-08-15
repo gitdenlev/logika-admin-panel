@@ -4,7 +4,6 @@ import { toast } from "vue-sonner";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -40,6 +39,19 @@ const deleteLoading = ref(false);
 // Стан для діалогу підтвердження видалення
 const showConfirmDeleteDialog = ref(false);
 
+// Обчислювана властивість для форматування дати оновлення
+const lastUpdatedDate = computed(() => {
+  if (localStudent.value && localStudent.value.updated_at) {
+    const date = new Date(localStudent.value.updated_at);
+    return date.toLocaleDateString("uk-UA", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+  return "";
+});
+
 watch(
   () => props.student,
   (newStudent) => {
@@ -55,7 +67,7 @@ watch(
 
 watch(
   localStudent,
-  (newVal, oldVal) => {
+  (newVal) => {
     if (props.student && newVal) {
       isEditing.value =
         newVal.student_name !== props.student.student_name ||
@@ -79,7 +91,7 @@ async function handleSave() {
 
   saveLoading.value = true;
   try {
-    const { data, error } = await client
+    const { error } = await client
       .from("students")
       .update({
         student_name: localStudent.value.student_name,
@@ -87,18 +99,17 @@ async function handleSave() {
         student_login: localStudent.value.student_login,
         student_balance: localStudent.value.student_balance,
       })
-      .eq("id", localStudent.value.id)
-      .select();
+      .eq("id", localStudent.value.id);
 
     if (error) {
       throw error;
     }
 
-    toast.success("Дані учня успішно оновлено"), {
+    toast.success("Дані учня успішно оновлено", {
       style: {
         border: "none",
       },
-    };
+    });
     emit("student-updated");
     closeDialog();
   } catch (error) {
@@ -160,7 +171,7 @@ async function confirmDelete() {
   }
 }
 
-// Обробка видимості основного діалогу  
+// Обробка видимості основного діалогу
 const showDialog = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -207,6 +218,7 @@ const showDialog = computed({
             v-model.number="localStudent.student_balance"
           />
         </div>
+        <FieldUpdateBalance />
       </div>
       <DialogFooter
         class="flex flex-col sm:flex-row justify-between gap-2 pt-4"
@@ -214,7 +226,7 @@ const showDialog = computed({
         <Button
           type="button"
           variant="destructive"
-          @click="requestDeleteConfirmation" 
+          @click="requestDeleteConfirmation"
           :disabled="deleteLoading"
           class="cursor-pointer sm:order-first"
         >
@@ -237,11 +249,13 @@ const showDialog = computed({
   <ConfirmDeleteDialog
     v-model="showConfirmDeleteDialog"
     title="Підтвердити видалення"
-    :description="`Ви впевнені, що хочете видалити учня ${localStudent?.student_name || ''}?`"
+    :description="`Ви впевнені, що хочете видалити учня ${
+      localStudent?.student_name || ''
+    }?`"
     confirmText="Видалити"
     :isLoading="deleteLoading"
     @confirm="confirmDelete"
     @cancel="showConfirmDeleteDialog = false"
-    style="z-index: 9999;"
+    style="z-index: 9999"
   />
 </template>

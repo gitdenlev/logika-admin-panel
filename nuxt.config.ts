@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxtjs/supabase",
     "shadcn-nuxt",
+    "@nuxtjs/color-mode",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {

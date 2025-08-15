@@ -15,6 +15,7 @@ const props = withDefaults(
     SelectTriggerProps & {
       class?: HTMLAttributes["class"];
       size?: "sm" | "default";
+      icon?: string; // Додано властивість для іконки
     }
   >(),
   { size: "default" }
@@ -37,7 +38,8 @@ const forwardedProps = useForwardProps(delegatedProps);
     "
   >
     <Icon
-      name="icomoon-free:books"
+      v-if="icon"
+      :name="icon"
       size="20"
       class="opacity-50 text-gray-600 transition-colors duration-200"
       aria-hidden="true"

@@ -43,7 +43,6 @@ const selectedTime = ref(null);
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Дні тижня</SelectLabel>
           <SelectItem v-for="day in daysOfWeek" :key="day" :value="day">
             {{ day }}
           </SelectItem>
@@ -53,12 +52,12 @@ const selectedTime = ref(null);
 
     <!-- Селектор для часу -->
     <Select v-model="selectedTime">
-      <SelectTrigger class="w-[180px]">
+      <SelectTrigger icon="lsicon:time-two-filled">
         <SelectValue placeholder="Оберіть час" />
       </SelectTrigger>
+     
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Години</SelectLabel>
           <SelectItem v-for="time in timeSlots" :key="time" :value="time">
             {{ time }}
           </SelectItem>
