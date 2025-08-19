@@ -3,7 +3,7 @@
     <div class="min-h-screen transition-all duration-500">
       <div class="mx-auto">
         <div class="flex items-center justify-between mb-8">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 class="text-2xl font-bold text-gray-600 dark:text-gray-100">
             {{ activeRatingType === 'balance' ? 'Таблиця успіху' : 'Герої донатів' }}
           </h1>
           <div class="flex justify-end">
@@ -53,13 +53,13 @@
             <table class="w-full">
               <thead>
                 <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Позиція
                   </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Студент
                   </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     {{ activeRatingType === 'balance' ? 'Баланс' : 'Донати' }}
                   </th>
                 </tr>
@@ -79,7 +79,7 @@
                           'bg-yellow-400 text-white': index === 0,
                           'bg-gray-400 text-white': index === 1,
                           'bg-orange-400 text-white': index === 2,
-                          'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300':
+                          'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300':
                             index > 2,
                         },
                       ]"
@@ -94,18 +94,13 @@
                       <div
                         class="w-10 h-10 bg-[#7B68EE] rounded-full flex items-center justify-center text-white font-bold text-sm"
                       >
-                        {{
-                          student.student_name.charAt(0).toUpperCase() +
-                          student.student_name.charAt(1).toUpperCase()
-                        }}
+                        {{ getInitials(student.student_name) }}
                       </div>
                       <div class="flex flex-col">
-                        <span class="text-base font-medium text-gray-900 dark:text-gray-100">
+                        <span class="text-base font-medium text-gray-600 dark:text-gray-100">
                           {{ student.student_name }}
                         </span>
-                        <span class="text-sm text-gray-600 dark:text-gray-400">
-                          {{ index === 0 ? 'Лідер' : index === 1 ? 'Друге місце' : index === 2 ? 'Третє місце' : `${index + 1} місце` }}
-                        </span>
+                      
                       </div>
                     </div>
                   </td>
@@ -113,7 +108,7 @@
                   <!-- Баланс / Донати -->
                   <td class="px-6 py-4 text-right">
                     <div class="flex flex-col items-end gap-1">
-                      <div class="flex items-center gap-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <div class="flex items-center gap-1 text-lg font-semibold text-gray-600 dark:text-gray-100">
                         {{
                           activeRatingType === "balance"
                             ? student.student_balance
@@ -146,7 +141,6 @@ useHead({
     { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
   ],
 });
-import { ref, onMounted, computed } from "vue";
 import { useSupabaseClient } from "#imports";
 
 // Supabase client instance
@@ -156,6 +150,17 @@ const client = useSupabaseClient();
 const students = ref([]);
 const isLoading = ref(true);
 const activeRatingType = ref("balance"); // 'balance' або 'donated'
+
+function getInitials(name: string | null): string {
+  if (!name) return "NN";
+  const parts = name.trim().split(" ");
+  if (parts.length >= 2) {
+    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+  } else if (parts.length === 1 && parts[0]) {
+    return parts[0].charAt(0).toUpperCase();
+  }
+  return "NN";
+}
 
 // Computed property to sort and filter students
 const sortedStudents = computed(() => {
