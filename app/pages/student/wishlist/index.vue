@@ -82,6 +82,17 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  title: "Вішліст",
+  meta: [
+    { name: "description", content: "Статистика, рейтинг, досягнення та магазини ЛКГ" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    { rel: "icon", type: "image/png", href: "/logika-invest-logo.svg" },
+    { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
+  ],
+});
 import { ref, onMounted, watch } from "vue";
 import { useSupabaseUser, useSupabaseClient } from '#imports';
 

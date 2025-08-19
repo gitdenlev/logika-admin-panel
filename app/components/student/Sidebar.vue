@@ -62,6 +62,11 @@ const sidebarItems = [
     icon: "octicon:goal-16",
   },
   {
+    title: "Рейтинг",
+    link: "/student/rating",
+    icon: "gridicons:trophy",
+  },
+  {
     title: "Армія",
     link: "/student/army",
     icon: "fluent-emoji-high-contrast:military-helmet",

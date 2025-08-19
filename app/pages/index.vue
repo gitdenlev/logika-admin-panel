@@ -3,7 +3,7 @@ import { Toaster } from "vue-sonner";
 import "vue-sonner/style.css";
 
 useHead({
-  title: "Logika Admin Panel",
+  title: "Logika Invest",
   meta: [
     {
       name: "description",
