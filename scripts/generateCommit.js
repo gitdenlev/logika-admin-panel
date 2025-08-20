@@ -10,26 +10,46 @@ async function generateCommitMessage(diffText) {
   return response.message.content.trim();
 }
 
+function divider() {
+  console.log("\n----------------------------------------\n");
+}
+
+function sanitizeMessage(raw) {
+  return raw.split("\n")[0].replace(/^"+|"+$/g, "");
+}
+
 async function main() {
   try {
     const realDiff = execSync("git diff --staged").toString().trim();
 
     if (!realDiff) {
-      console.log(
-        "No changes to commit. Please stage your changes first (git add)."
-      );
+      divider();
+      console.log("⚠️  No staged changes. Use 'git add' first.");
+      divider();
       return;
     }
 
-    const commitMessage = await generateCommitMessage(realDiff);
+    console.log("🤖 Generating commit message...");
+    const rawCommitMessage = await generateCommitMessage(realDiff);
+    const commitMessage = sanitizeMessage(rawCommitMessage);
+
+    divider();
+    console.log("📝 Full AI suggestion:\n");
+    console.log(rawCommitMessage);
+    divider();
+    console.log("✨ Commit message to be used:\n");
+    console.log(`   "${commitMessage}"`);
+    divider();
 
     execSync("git add .");
-
-    console.log(`Generated commit message:\n${commitMessage}`);
-
     execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
+
+    console.log("✅ Commit created successfully!");
+    divider();
   } catch (error) {
-    console.error("An error occurred:", error.message);
+    divider();
+    console.error("💥 Error:", error.message);
+    divider();
   }
 }
 
