@@ -12,14 +12,17 @@ import {
 import StudentEditDialog from "@/components/StudentEditDialog.vue";
 
 const props = defineProps({
+  // Filtered students array
   filteredStudents: {
     type: Array,
     required: true,
   },
+  // Error object or null if no error occurred
   fetchError: {
     type: [Object, null],
     default: null,
   },
+  // Total number of students
   studentsCount: {
     type: Number,
     required: true,
@@ -28,22 +31,32 @@ const props = defineProps({
 
 const emit = defineEmits(["student-data-changed"]);
 
-// Стан для керування модальним вікном редагування
+// Flag to track if the edit dialog is open
 const isEditDialogOpen = ref(false);
+// Selected student object
 const selectedStudent = ref(null);
 
-// Функція для відкриття діалогу редагування
+/**
+ * Opens the edit dialog for a given student
+ * @param {Object} student - Student object
+ */
 const openEditDialog = (student) => {
   selectedStudent.value = student;
   isEditDialogOpen.value = true;
 };
 
-// Обробник, коли дані учня змінилися (оновлення/видалення)
+/**
+ * Emitted event when student data changes
+ */
 const handleStudentDataChanged = () => {
   emit("student-data-changed");
 };
 
-// Функція для перевірки, чи був студент оцінений менше ніж 24 години тому
+/**
+ * Checks if a student's evaluation status is recent
+ * @param {Object} student - Student object
+ * @returns {Boolean} True if the student's evaluation status is recent, false otherwise
+ */
 const isRecentlyEvaluated = (student) => {
   if (!student.last_evaluated_at) return false;
   
@@ -54,7 +67,10 @@ const isRecentlyEvaluated = (student) => {
   return hoursDiff < 24;
 };
 
-// Обчислювана властивість для студентів з інформацією про статус оцінювання
+/**
+ * Computed property to filter students by evaluation status
+ * @returns {Array} Students array with added evaluation status
+ */
 const studentsWithEvaluationStatus = computed(() => {
   return props.filteredStudents.map(student => ({
     ...student,
@@ -65,7 +81,7 @@ const studentsWithEvaluationStatus = computed(() => {
 
 <template>
   <div v-if="fetchError" class="text-red-500 mb-4">
-    Помилка завантаження даних:
+    помилка завантаження даних:
     {{ fetchError.statusMessage || fetchError.message || "Невідома помилка" }}
   </div>
 
@@ -88,7 +104,6 @@ const studentsWithEvaluationStatus = computed(() => {
         class="cursor-pointer hover:bg-zinc-200 transition-colors duration-200"
         @click="openEditDialog(student)"
       >
-        <!-- <TableCell class="font-medium">{{ student.id }}</TableCell> -->
         <TableCell>{{ student.student_name }}</TableCell>
         <TableCell>{{ student.student_course }}</TableCell>
         <TableCell>{{ student.student_login }}</TableCell>
