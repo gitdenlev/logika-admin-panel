@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"; // Додано ref для керування станом діалогу
+import { ref, computed } from "vue";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import StudentEditDialog from "@/components/StudentEditDialog.vue"; // Імпорт нового компонента
+import StudentEditDialog from "@/components/StudentEditDialog.vue";
 
 const props = defineProps({
   filteredStudents: {
@@ -26,7 +26,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["student-data-changed"]); // Подія, коли дані учня оновилися/видалилися
+const emit = defineEmits(["student-data-changed"]);
 
 // Стан для керування модальним вікном редагування
 const isEditDialogOpen = ref(false);
@@ -40,8 +40,27 @@ const openEditDialog = (student) => {
 
 // Обробник, коли дані учня змінилися (оновлення/видалення)
 const handleStudentDataChanged = () => {
-  emit("student-data-changed"); // Перевидаємо подію до батьківського компонента (pages/index.vue)
+  emit("student-data-changed");
 };
+
+// Функція для перевірки, чи був студент оцінений менше ніж 24 години тому
+const isRecentlyEvaluated = (student) => {
+  if (!student.last_evaluated_at) return false;
+  
+  const evaluatedAt = new Date(student.last_evaluated_at);
+  const now = new Date();
+  const hoursDiff = (now - evaluatedAt) / (1000 * 60 * 60);
+  
+  return hoursDiff < 24;
+};
+
+// Обчислювана властивість для студентів з інформацією про статус оцінювання
+const studentsWithEvaluationStatus = computed(() => {
+  return props.filteredStudents.map(student => ({
+    ...student,
+    showEvaluatedStatus: isRecentlyEvaluated(student)
+  }));
+});
 </script>
 
 <template>
@@ -53,7 +72,7 @@ const handleStudentDataChanged = () => {
   <Table v-else-if="filteredStudents.length > 0" class="w-full">
     <TableHeader>
       <TableRow class="bg-[#7B68EE] hover:bg-[#7B68EE]/95 text-white">
-        <TableHead class="w-[100px] text-white">ID</TableHead>
+        <!-- <TableHead class="w-[100px] text-white">ID</TableHead> -->
         <TableHead class="text-white">Учень</TableHead>
         <TableHead class="text-white">Курс</TableHead>
         <TableHead class="text-white">Логін</TableHead>
@@ -64,12 +83,12 @@ const handleStudentDataChanged = () => {
     </TableHeader>
     <TableBody class="bg-zinc-100">
       <TableRow
-        v-for="student in filteredStudents"
+        v-for="student in studentsWithEvaluationStatus"
         :key="student.id"
         class="cursor-pointer hover:bg-zinc-200 transition-colors duration-200"
         @click="openEditDialog(student)"
       >
-        <TableCell class="font-medium">{{ student.id }}</TableCell>
+        <!-- <TableCell class="font-medium">{{ student.id }}</TableCell> -->
         <TableCell>{{ student.student_name }}</TableCell>
         <TableCell>{{ student.student_course }}</TableCell>
         <TableCell>{{ student.student_login }}</TableCell>
@@ -81,13 +100,17 @@ const handleStudentDataChanged = () => {
           {{ student.student_balance }}
         </TableCell>
         <TableCell class="text-right">
-          <span
-            class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full ml-2"
-          >
-            ✓ Оцінено
-          </span>
-          <div class="text-xs text-gray-500 mt-1">26/07/2025</div></TableCell
-        >
+          <div v-if="student.showEvaluatedStatus">
+            <span
+              class="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full"
+            >
+              ✓ Оцінено
+            </span>
+          </div>
+          <div v-else class="text-xs text-gray-400 italic">
+            Оцініть останній урок
+          </div>
+        </TableCell>
       </TableRow>
     </TableBody>
   </Table>

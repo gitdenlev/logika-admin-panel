@@ -29,7 +29,7 @@ const emit = defineEmits([
   "student-deleted",
 ]);
 
-const client = useSupabaseClient(); // Supabase клієнт для взаємодії з БД
+const client = useSupabaseClient();
 
 const localStudent = ref(null);
 const isEditing = ref(false);
@@ -38,6 +38,9 @@ const deleteLoading = ref(false);
 
 // Стан для діалогу підтвердження видалення
 const showConfirmDeleteDialog = ref(false);
+
+// Змінна для відстеження початкового балансу
+const initialBalance = ref(null);
 
 // Обчислювана властивість для форматування дати оновлення
 const lastUpdatedDate = computed(() => {
@@ -57,9 +60,11 @@ watch(
   (newStudent) => {
     if (newStudent) {
       localStudent.value = { ...newStudent };
+      initialBalance.value = newStudent.student_balance; // Запам'ятовуємо початковий баланс
       isEditing.value = false;
     } else {
       localStudent.value = null;
+      initialBalance.value = null;
     }
   },
   { deep: true, immediate: true }
@@ -83,33 +88,51 @@ watch(
 
 const closeDialog = () => {
   emit("update:modelValue", false);
-  showConfirmDeleteDialog.value = false; // Закриваємо також діалог підтвердження
+  showConfirmDeleteDialog.value = false;
 };
 
 async function handleSave() {
   if (!localStudent.value || !isEditing.value) return;
 
+  const balanceChanged = initialBalance.value !== localStudent.value.student_balance;
+
   saveLoading.value = true;
   try {
+    const updateData = {
+      student_name: localStudent.value.student_name,
+      student_course: localStudent.value.student_course,
+      student_login: localStudent.value.student_login,
+      student_balance: localStudent.value.student_balance,
+    };
+
+    // Якщо баланс змінився, додаємо мітку часу оцінювання
+    if (balanceChanged) {
+      updateData.last_evaluated_at = new Date().toISOString();
+    }
+
     const { error } = await client
       .from("students")
-      .update({
-        student_name: localStudent.value.student_name,
-        student_course: localStudent.value.student_course,
-        student_login: localStudent.value.student_login,
-        student_balance: localStudent.value.student_balance,
-      })
+      .update(updateData)
       .eq("id", localStudent.value.id);
 
     if (error) {
       throw error;
     }
 
-    toast.success("Дані учня успішно оновлено", {
-      style: {
-        border: "none",
-      },
-    });
+    if (balanceChanged) {
+      toast.success("Учня успішно оцінено", {
+        style: {
+          border: "none",
+        },
+      });
+    } else {
+      toast.success("Дані учня успішно оновлено", {
+        style: {
+          border: "none",
+        },
+      });
+    }
+    
     emit("student-updated");
     closeDialog();
   } catch (error) {
@@ -157,8 +180,8 @@ async function confirmDelete() {
       },
     });
     emit("student-deleted");
-    showConfirmDeleteDialog.value = false; // Закриваємо діалог підтвердження
-    closeDialog(); // Закриваємо основний діалог
+    showConfirmDeleteDialog.value = false;
+    closeDialog();
   } catch (error) {
     console.error("Помилка видалення учня:", error.message);
     toast.error(`Помилка видалення: ${error.message}`, {
