@@ -21,7 +21,15 @@ async function generateCommitMessage(diffText) {
 }
 
 function sanitizeMessage(raw) {
-  return raw.split("\n")[0].replace(/^"+|"+$/g, "");
+  let firstLine = raw.split("\n")[0].trim();
+
+  firstLine = firstLine.replace(/^"+|"+$/g, "");
+
+  if (firstLine.length > 80) {
+    firstLine = firstLine.slice(0, 77) + "...";
+  }
+
+  return firstLine;
 }
 
 function logBox(message, color = "blue", icon = "ℹ️") {
