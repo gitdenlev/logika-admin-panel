@@ -45,10 +45,13 @@ function logBox(message, color = "blue", icon = "ℹ️") {
 
 async function main() {
   try {
+    // Автоматично додати всі файли у staging
+    execSync("git add .", { stdio: "inherit" });
+
     const realDiff = execSync("git diff --staged").toString().trim();
 
     if (!realDiff) {
-      logBox("No staged changes. Use 'git add' first.", "yellow", "⚠️");
+      logBox("No staged changes. Nothing to commit.", "yellow", "⚠️");
       return;
     }
 
@@ -56,19 +59,13 @@ async function main() {
 
     const rawCommitMessage = await generateCommitMessage(realDiff);
     const commitMessage = sanitizeMessage(rawCommitMessage);
-
-    logBox(
-      `Full AI suggestion:\n\n${chalk.white(rawCommitMessage)}`,
-      "cyan",
-      "📝"
-    );
+    
     logBox(
       `Commit message to be used:\n\n${chalk.green(`"${commitMessage}"`)}`,
       "green",
       "✨"
     );
 
-    execSync("git add .");
     execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
 
     logBox("Commit created successfully!", "green", "✅");
