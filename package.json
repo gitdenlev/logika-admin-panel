@@ -33,6 +33,7 @@
     "lucide-vue-next": "^0.525.0",
     "nuxt": "^4.0.0",
     "ollama": "^0.5.17",
+    "ora": "^8.2.0",
     "reka-ui": "^2.4.1",
     "shadcn-nuxt": "^2.2.0",
     "tailwind-merge": "^3.3.1",
