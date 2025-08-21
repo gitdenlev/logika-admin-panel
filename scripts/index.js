@@ -42,7 +42,7 @@ async function mainMenu() {
   if (answer.action === "commit") {
     execSync("node ./scripts/generate-commit/index.js", { stdio: "inherit" });
   } else if (answer.action === "comments") {
-    execSync("node ./scripts/echo-notes.js", { stdio: "inherit" });
+    execSync("node ./scripts/generate-comments/index.js", { stdio: "inherit" });
   } else {
     process.exit(0);
   }
