@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "commit": "node scripts/generate-commit/index.js",
     "comments": "node scripts/generate-comments/index.js",
-    "voro": "node scripts/index.js"
+    "chp": "node scripts/index.js"
   },
   "dependencies": {
     "@nuxt/fonts": "^0.11.4",

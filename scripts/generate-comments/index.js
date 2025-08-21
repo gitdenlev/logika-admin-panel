@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import ollama from "ollama";
 import chalk from "chalk";
 import boxen from "boxen";
+import path from "path";
 
 // Common box settings for consistent look
 const BOX_WIDTH = 46;
@@ -31,12 +32,12 @@ async function generateComment(codeSnippet) {
 // Main CLI runner
 async function main() {
   try {
-    const filePath = process.argv[2];
+    let filePath = process.argv[2];
     if (!filePath) {
       const msg =
         chalk.yellow("⚠️  Please provide a file path.") +
         "\n\n" +
-        chalk.cyan("Example: npm run comments ./src/app.js");
+        chalk.cyan("Example: npm run comments @/app/pages");
 
       console.log(
         boxen(msg, {
@@ -47,6 +48,11 @@ async function main() {
         })
       );
       return;
+    }
+
+    if (filePath.startsWith("@/")) {
+      const baseDir = path.resolve(process.cwd(), "./");
+      filePath = path.join(baseDir, filePath.slice(2));
     }
 
     console.log(

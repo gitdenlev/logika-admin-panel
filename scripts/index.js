@@ -5,10 +5,10 @@ import { execSync } from "child_process";
 
 // Вітання
 console.log(
-  chalk.blue(figlet.textSync("Voro", { horizontalLayout: "full" }))
+  chalk.blue(figlet.textSync("Code Helper", { horizontalLayout: "full" }))
 );
 
-console.log(chalk.cyan("🚀 Welcome to Voro CLI\n"));
+console.log(chalk.cyan("🚀 Welcome to Code Helper\n"));
 
 async function mainMenu() {
   const choices = [
