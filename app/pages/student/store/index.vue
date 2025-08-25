@@ -92,7 +92,10 @@
 useHead({
   title: "Магазин",
   meta: [
-    { name: "description", content: "Статистика, рейтинг, досягнення та магазини ЛКГ" },
+    {
+      name: "description",
+      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+    },
     { name: "robots", content: "index, follow" },
   ],
   link: [
@@ -117,6 +120,13 @@ const products = ref([
     isInWishlist: false,
   },
   {
+    name: "Брелок",
+    price: 15,
+    description: "Маленький брелок для ключів.",
+    icon: "iconoir:rings",
+    isInWishlist: false,
+  },
+  {
     name: "Наліпки",
     price: 25,
     description: "Набір яскравих наліпок для вашого ноутбука чи блокнота.",
@@ -131,10 +141,24 @@ const products = ref([
     isInWishlist: false,
   },
   {
+    name: "Зошит",
+    price: 30,
+    description: "Якісний зошит для нотаток та ідей.",
+    icon: "solar:notebook-minimalistic-linear",
+    isInWishlist: false,
+  },
+  {
     name: "Значок",
     price: 30,
     description: "Металевий значок із символом вашого курсу.",
     icon: "ph:circle-fill",
+    isInWishlist: false,
+  },
+  {
+    name: "Гумки для стирання",
+    price: 40,
+    description: "Пара гумок для стирання помилок.",
+    icon: "vaadin:elastic",
     isInWishlist: false,
   },
   {
@@ -145,10 +169,24 @@ const products = ref([
     isInWishlist: false,
   },
   {
+    name: "Підставка під телефон",
+    price: 50,
+    description: "Зручна підставка для перегляду відео на телефоні.",
+    icon: "material-symbols:nest-cam-stand",
+    isInWishlist: false,
+  },
+  {
     name: "Шкарпетки",
     price: 100,
     description: "Фірмові шкарпетки Logika. Яскраві та зручні.",
     icon: "ph:sock-duotone",
+    isInWishlist: false,
+  },
+  {
+    name: "Пенал",
+    price: 100,
+    description: "Практичний пенал для зберігання канцелярії.",
+    icon: "solar:airbuds-case-bold",
     isInWishlist: false,
   },
   {
@@ -191,6 +229,13 @@ const products = ref([
     price: 300,
     description: "Якісні бездротові навушники для музики та навчання.",
     icon: "ph:headphones-duotone",
+    isInWishlist: false,
+  },
+  {
+    name: "Музична колонка",
+    price: 300,
+    description: "Портативна колонка для улюбленої музики.",
+    icon: "akar-icons:music-album-fill",
     isInWishlist: false,
   },
   {
