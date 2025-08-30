@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Toast notifications
+import {ref} from "vue";
 import { toast } from "vue-sonner";
 
 // Utilities
@@ -26,6 +27,8 @@ const newStudentName = ref("");
 const newStudentCourse = ref("");
 const newStudentLogin = ref("");
 const newStudentBalance = ref(0);
+const newStudentSchedule = ref("");
+
 
 const isAddingStudent = ref(false);
 const showAddStudentDialog = ref(false);
@@ -37,6 +40,7 @@ function resetAddStudentFormAndMessages() {
   newStudentCourse.value = "";
   newStudentLogin.value = "";
   newStudentBalance.value = 0;
+  newStudentSchedule.value = "";
 }
 
 async function addNewStudentToDb() {
@@ -46,6 +50,7 @@ async function addNewStudentToDb() {
     student_name: newStudentName.value,
     student_course: newStudentCourse.value,
     student_login: newStudentLogin.value,
+    student_schedule: newStudentSchedule.value,
   };
 
   try {
@@ -122,6 +127,12 @@ async function addNewStudentToDb() {
           placeholder="Введіть логін учня"
           id="newStudentLogin"
           v-model="newStudentLogin"
+          class="col-span-4"
+        />
+        <Input
+          placeholder="Введіть час занять"
+          id="newStudentSchedule"
+          v-model="newStudentSchedule"
           class="col-span-4"
         />
         <!-- <Input

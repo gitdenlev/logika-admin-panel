@@ -94,7 +94,8 @@ const closeDialog = () => {
 async function handleSave() {
   if (!localStudent.value || !isEditing.value) return;
 
-  const balanceChanged = initialBalance.value !== localStudent.value.student_balance;
+  const balanceChanged =
+    initialBalance.value !== localStudent.value.student_balance;
 
   saveLoading.value = true;
   try {
@@ -103,6 +104,7 @@ async function handleSave() {
       student_course: localStudent.value.student_course,
       student_login: localStudent.value.student_login,
       student_balance: localStudent.value.student_balance,
+      student_wishlist: localStudent.value.wishlist,
     };
 
     // Якщо баланс змінився, додаємо мітку часу оцінювання
@@ -132,7 +134,7 @@ async function handleSave() {
         },
       });
     }
-    
+
     emit("student-updated");
     closeDialog();
   } catch (error) {
@@ -241,6 +243,34 @@ const showDialog = computed({
             v-model.number="localStudent.student_balance"
           />
         </div>
+
+        <div>
+          <label for="student_balance">Список бажаного</label>
+          <ul id="student_wishlist" class="space-y-2">
+            <li
+              v-if="
+                !localStudent?.wishlist || localStudent.wishlist.length === 0
+              "
+              class="text-sm text-gray-500"
+            >
+              Список порожній
+            </li>
+
+            <li
+              v-for="(item, idx) in localStudent?.wishlist"
+              :key="item.id ?? idx"
+              class="flex items-start gap-3 bg-white dark:bg-slate-800 border border-transparent rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow duration-150"
+            >
+              <div
+                class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"
+              >
+                {{ item.description }}
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Update student balance -->
         <FieldUpdateBalance />
       </div>
       <DialogFooter

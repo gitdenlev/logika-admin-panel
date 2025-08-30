@@ -194,7 +194,7 @@ const client = useSupabaseClient();
 const user = useSupabaseUser();
 
 const totalDonatedPoints = ref(0);
-const donationGoal = ref(1000);
+const donationGoal = ref(1500);
 const studentProfile = ref(null);
 
 const isDonationDialogOpen = ref(false);
