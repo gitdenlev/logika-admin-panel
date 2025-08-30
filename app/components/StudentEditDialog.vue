@@ -104,7 +104,7 @@ async function handleSave() {
       student_course: localStudent.value.student_course,
       student_login: localStudent.value.student_login,
       student_balance: localStudent.value.student_balance,
-      student_wishlist: localStudent.value.wishlist,
+      wishlist: localStudent.value.wishlist,
     };
 
     // Якщо баланс змінився, додаємо мітку часу оцінювання
@@ -264,7 +264,7 @@ const showDialog = computed({
               <div
                 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"
               >
-                {{ item.description }}
+                {{ item.name }}
               </div>
             </li>
           </ul>
