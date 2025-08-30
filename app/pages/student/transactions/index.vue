@@ -207,28 +207,244 @@ useHead({
     { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
   ],
 });
+import { ref, onMounted, watch, computed } from "vue";
+import { useSupabaseUser, useSupabaseClient } from "#imports";
+import JSConfetti from "js-confetti";
 
-import { useTransactions } from "~/composables/useTransactions";
-import { getInitials } from "~/utils/formatters";
+let jsConfetti: JSConfetti;
 
-const {
-  amount,
-  searchQuery,
-  selectedRecipient,
-  studentProfile,
-  isLoading,
-  transactionMessage,
-  transactionStatus,
-  showSuccessView,
-  quickAmounts,
-  randomMessage,
-  filteredStudents,
-  selectRecipient,
-  sendTransaction,
-} = useTransactions();
+const amount = ref<number | null>(null);
+const searchQuery = ref("");
+const selectedRecipient = ref<any>(null);
+const studentsList = ref<any[]>([]);
+const studentProfile = ref<any>(null);
+const comment = ref("");
+const isLoading = ref(false);
+const transactionMessage = ref("");
+const transactionStatus = ref("");
+
+const showSuccessView = ref(false);
+
+const quickAmounts = [1, 5, 10, 25, 50];
+
+const funnyMessages = [
+  "🚫 Балів малувато… наче холодильник після зарплати 🥲",
+  "🚫 Ми б переказали, але баланс сказав: «Ні» 🙃",
+  "🚫 Баланс просить підзарядки, як телефон з 1% 🔋",
+  "🚫 Упс! На рахунку пусто, як у шафі після переїзду 📦",
+  "🚫 Не вистачає балів… але є гарний настрій 😅",
+  "🚫 Ваш баланс сором'язливо ховається від цього переказу 🙈",
+  "🚫 Ще трішечки — і було б якраз! 😉",
+  "🚫 Баланс худіший за дієтичну котлету 🥩❌",
+  "🚫 Балів менше, ніж кави в понеділок зранку ☕",
+  "🚫 Цей переказ занадто розкішний для вашого балансу 💎",
+];
+
+const randomMessage = ref("");
+
+function pickRandomMessage() {
+  const index = Math.floor(Math.random() * funnyMessages.length);
+  randomMessage.value = funnyMessages[index];
+}
+
+function getInitials(name: string): string {
+  if (!name) return "";
+  const parts = name.trim().split(" ");
+  if (parts.length > 1 && parts[1]) {
+    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+  }
+  return parts[0].charAt(0).toUpperCase();
+}
+
+function clearSelection() {
+  selectedRecipient.value = null;
+  amount.value = null;
+  comment.value = "";
+  transactionMessage.value = "";
+  transactionStatus.value = "";
+  showSuccessView.value = false;
+}
+
+function clearTransactionMessage() {
+  setTimeout(() => {
+    transactionMessage.value = "";
+    transactionStatus.value = "";
+  }, 5000);
+}
+
+const user = useSupabaseUser();
+const client = useSupabaseClient();
+
+const filteredStudents = computed(() => {
+  if (!searchQuery.value) {
+    return [];
+  }
+  return studentsList.value.filter((student) =>
+    student.student_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+function selectRecipient(student: any) {
+  selectedRecipient.value = student;
+  searchQuery.value = "";
+  amount.value = null;
+  comment.value = "";
+  transactionMessage.value = "";
+  transactionStatus.value = "";
+}
+
+async function fetchStudentProfile() {
+  if (user.value) {
+    const { data, error } = await client
+      .from("students")
+      .select("student_name, student_balance")
+      .eq("student_login", user.value.email)
+      .single();
+
+    if (error) {
+      console.error("Помилка отримання даних студента:", error.message);
+      studentProfile.value = null;
+    } else {
+      studentProfile.value = data;
+    }
+  }
+}
+
+async function fetchStudentsList() {
+  const { data, error } = await client
+    .from("students")
+    .select("id, student_name, student_login");
+
+  if (error) {
+    console.error("Помилка завантаження списку студентів:", error.message);
+  } else {
+    studentsList.value =
+      data?.filter((student) => student.student_login !== user.value?.email) ||
+      [];
+  }
+}
+
+async function sendTransaction() {
+  if (
+    !amount.value ||
+    amount.value <= 0 ||
+    !selectedRecipient.value ||
+    !studentProfile.value
+  ) {
+    return;
+  }
+
+  if (amount.value > studentProfile.value.student_balance) {
+    transactionMessage.value = "Недостатньо балів для переказу";
+    transactionStatus.value = "error";
+    clearTransactionMessage();
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    const { error: senderError } = await client
+      .from("students")
+      .update({
+        student_balance: studentProfile.value.student_balance - amount.value,
+      })
+      .eq("student_login", user.value.email);
+
+    if (senderError) {
+      throw new Error("Помилка зменшення балансу відправника");
+    }
+
+    const { data: recipientData, error: recipientFetchError } = await client
+      .from("students")
+      .select("student_balance")
+      .eq("student_login", selectedRecipient.value.student_login)
+      .single();
+
+    if (recipientFetchError) {
+      await client
+        .from("students")
+        .update({
+          student_balance: studentProfile.value.student_balance,
+        })
+        .eq("student_login", user.value.email);
+      throw new Error("Помилка отримання даних одержувача");
+    }
+
+    const { error: recipientError } = await client
+      .from("students")
+      .update({
+        student_balance: recipientData.student_balance + amount.value,
+      })
+      .eq("student_login", selectedRecipient.value.student_login);
+
+    if (recipientError) {
+      await client
+        .from("students")
+        .update({
+          student_balance: studentProfile.value.student_balance,
+        })
+        .eq("student_login", user.value.email);
+      throw new Error("Помилка збільшення балансу одержувача");
+    }
+
+    const transactionData = {
+      sender_login: user.value.email,
+      sender_name: studentProfile.value.student_name,
+      recipient_login: selectedRecipient.value.student_login,
+      recipient_name: selectedRecipient.value.student_name,
+      amount: amount.value,
+      created_at: new Date().toISOString(),
+    };
+
+    await client.from("transactions").insert([transactionData]);
+
+    studentProfile.value.student_balance -= amount.value;
+
+    showSuccessView.value = true;
+    jsConfetti.addConfetti({
+      emojis: ["💜", "🎁", "🪄", "🌸", "🛍️", "🔮"],
+      emojiSize: 80,
+      confettiNumber: 40,
+    });
+
+    setTimeout(() => {
+      clearSelection();
+    }, 3500);
+  } catch (error: any) {
+    console.error("Помилка транзакції:", error);
+    transactionMessage.value =
+      error.message || "Помилка при відправці логіків. Спробуйте ще раз.";
+    transactionStatus.value = "error";
+    clearTransactionMessage();
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 definePageMeta({
   middleware: ["admin-auth"],
+});
+
+onMounted(() => {
+  jsConfetti = new JSConfetti();
+
+  fetchStudentProfile();
+  fetchStudentsList();
+  pickRandomMessage();
+});
+
+watch(user, (newUser) => {
+  if (newUser) {
+    fetchStudentProfile();
+    fetchStudentsList();
+  }
+});
+
+watch(amount, (newVal) => {
+  if (newVal && newVal > (studentProfile.value?.student_balance || 0)) {
+    pickRandomMessage();
+  }
 });
 </script>
 
