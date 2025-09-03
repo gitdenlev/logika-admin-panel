@@ -52,14 +52,14 @@
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead>
-                <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-500">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-100 uppercase tracking-wider">
                     Позиція
                   </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-100 uppercase tracking-wider">
                     Студент
                   </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-100 uppercase tracking-wider">
                     {{ activeRatingType === 'balance' ? 'Баланс' : 'Донати' }}
                   </th>
                 </tr>

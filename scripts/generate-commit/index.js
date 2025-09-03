@@ -59,7 +59,7 @@ async function main() {
 
     const rawCommitMessage = await generateCommitMessage(realDiff);
     const commitMessage = sanitizeMessage(rawCommitMessage);
-    
+
     logBox(
       `Commit message to be used:\n\n${chalk.green(`"${commitMessage}"`)}`,
       "green",

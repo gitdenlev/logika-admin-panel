@@ -45,7 +45,7 @@
               <div class="mt-4">
                 <button
                   @click="removeFromWishlist(product)"
-                  class="cursor-pointer w-full bg-red-400 dark:bg-red-700 hover:bg-red-500/90 dark:hover:bg-red-800 text-white font-bold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2"
+                  class="cursor-pointer w-full bg-red-400 hover:bg-red-500/50 text-white font-bold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2"
                 >
                   <Icon name="lucide:minus" size="20" />
                   <span>Видалити</span>

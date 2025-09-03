@@ -270,6 +270,12 @@ const showDialog = computed({
           </ul>
         </div>
 
+        <div>
+          <label for="student_donated_points">Вклад в ЗСУ</label>
+          <br>
+          <span>{{ localStudent.donated_points }} логіки</span>
+        </div>
+
         <!-- Update student balance -->
         <FieldUpdateBalance />
       </div>
