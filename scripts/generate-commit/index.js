@@ -66,15 +66,19 @@ export async function main() {
       chalk.green("✨ Повідомлення для коміту успішно згенеровано!")
     );
 
-    logBox(
-      `Повідомлення, що буде використано:\n\n${chalk.bold.green(
-        `"${commitMessage}"`
-      )}`,
-      "green",
-      "📝"
+    console.log(
+      chalk.bold.green("\n📝 Повідомлення, що буде використано:")
+    );
+    console.log(
+      boxen(chalk.cyan(`"${commitMessage}"`), {
+        padding: 1,
+        margin: 1,
+        borderStyle: "double",
+        borderColor: "green",
+      })
     );
 
-    execSync(`git commit -m \"${commitMessage}\"`, { stdio: "inherit" });
+    execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
 
     logBox("Коміт успішно створено!", "green", "✅");
   } catch (error) {
