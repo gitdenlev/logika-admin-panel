@@ -30,7 +30,7 @@ async function generateComment(codeSnippet) {
 }
 
 // Main CLI runner
-async function main() {
+export async function main() {
   try {
     let filePath = process.argv[2];
     if (!filePath) {
@@ -97,5 +97,3 @@ async function main() {
     );
   }
 }
-
-main();

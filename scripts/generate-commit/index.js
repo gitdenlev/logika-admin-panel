@@ -43,7 +43,7 @@ function logBox(message, color = "blue", icon = "ℹ️") {
   );
 }
 
-async function main() {
+export async function main() {
   try {
     // Автоматично додати всі файли у staging
     execSync("git add .", { stdio: "inherit" });
