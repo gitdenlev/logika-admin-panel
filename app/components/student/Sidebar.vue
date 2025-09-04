@@ -38,7 +38,7 @@ import { useRoute } from 'vue-router';
 const sidebarItems = [
   {
     title: "Дашборд",
-    link: "/",
+    link: "/student/dashboard",
     icon: "material-symbols:grid-view-rounded",
   },
   {

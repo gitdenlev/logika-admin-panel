@@ -5,7 +5,7 @@ import { execSync } from "child_process";
 
 // Вітання
 console.log(
-  chalk.blue(figlet.textSync("Code Helper", { horizontalLayout: "full" }))
+  chalk.blue(figlet.textSync("Voro", { horizontalLayout: "full" }))
 );
 
 console.log(chalk.cyan("🚀 Welcome to Code Helper\n"));

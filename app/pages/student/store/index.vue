@@ -3,196 +3,231 @@
     <div
       class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans transition-colors duration-200"
     >
-      <!-- Блок з балансом та статистикою -->
+      <!-- Стан завантаження -->
       <div
-        class="fixed bottom-0 right-8 z-999 mb-8 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700"
+        v-if="isLoading"
+        class="flex flex-col items-center justify-center text-center h-screen"
       >
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4"
-        >
-          <div>
-            <h2 class="text-md font-bold text-gray-800 dark:text-gray-200 mb-2">
-              Ваш баланс
-            </h2>
-            <div class="flex items-center gap-1">
-              <p class="text-md font-bold text-[#7B68EE] dark:text-[#8B7EFF]">
-                {{ studentBalance }}
-              </p>
-              <NuxtImg src="/lgk.svg" width="15" />
-            </div>
-          </div>
-          <div v-if="currentWishlistCost > 0">
-            <h2 class="text-md font-bold text-gray-800 dark:text-gray-200 mb-2">
-              Залишок
-            </h2>
-            <div class="flex items-center gap-1">
-              <p class="text-md font-bold text-[#7B68EE] dark:text-[#8B7EFF]">
-                {{ studentBalance - currentWishlistCost }}
-              </p>
-              <NuxtImg src="/lgk.svg" width="15" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Прогрес бар -->
-        <div class="mb-4">
-          <div
-            class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"
-          >
-            <span>Використано логіків</span>
-            <span
-              >{{
-                Math.round(
-                  (currentWishlistCost / Math.max(studentBalance, 1)) * 100
-                )
-              }}%</span
-            >
-          </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            <div
-              class="h-3 rounded-full transition-all duration-300"
-              :class="
-                currentWishlistCost > studentBalance
-                  ? 'bg-red-500'
-                  : 'bg-[#7B68EE] dark:bg-[#8B7EFF]'
-              "
-              :style="{
-                width: `${Math.min(
-                  (currentWishlistCost / Math.max(studentBalance, 1)) * 100,
-                  100
-                )}%`,
-              }"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Швидкі дії -->
-        <div class="flex flex-wrap gap-3">
-          <NuxtLink to="/student/wishlist">
-            <button
-              class="cursor-pointer bg-[#7B68EE] dark:bg-[#8B7EFF] hover:bg-[#7B68EE]/80 dark:hover:bg-[#8B7EFF]/90 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center gap-2"
-            >
-              <Icon name="lucide:heart" size="16" />
-              <span>Переглянути вішліст</span>
-            </button>
-          </NuxtLink>
-
-          <button
-            v-if="currentWishlistCost > studentBalance"
-            @click="optimizeWishlist"
-            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center gap-2"
-          >
-            <Icon name="lucide:zap" size="16" />
-            <span>Оптимізувати вішліст</span>
-          </button>
-        </div>
+        <Loader />
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Основний контент -->
+      <div v-else>
+        <!-- Блок з балансом та статистикою -->
         <div
-          v-for="(product, index) in products"
-          :key="index"
-          class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl dark:shadow-gray-900/20 flex flex-col justify-between transition-all duration-200 border border-gray-200 dark:border-gray-700"
+          class="fixed bottom-0 right-8 z-50 mb-8 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700"
         >
           <div
-            class="relative mb-4 flex justify-center items-center h-40 bg-gray-100 dark:bg-gray-700 rounded-xl transition-colors duration-200"
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4"
           >
-            <Icon
-              :name="product.icon"
-              size="60"
-              class="text-[#7B68EE] dark:text-[#8B7EFF] transition-colors duration-200"
-              :class="
-                !canAffordProduct(product) && !product.isInWishlist
-                  ? 'opacity-50'
-                  : ''
-              "
-            />
-            <div
-              class="absolute top-3 right-3 flex items-center justify-center w-12 h-12 bg-[#7B68EE] dark:bg-[#8B7EFF] text-white font-bold text-sm rounded-full shadow-lg transition-colors duration-200"
-              :class="
-                !canAffordProduct(product) && !product.isInWishlist
-                  ? 'bg-gray-400 dark:bg-gray-600'
-                  : ''
-              "
-            >
-              {{ product.price }}
-            </div>
-
-            <!-- Іконки статусу -->
-            <div class="absolute top-3 left-3">
-              <div
-                v-if="product.isInWishlist"
-                class="flex items-center justify-center w-8 h-8 bg-[#7B68EE] text-white rounded-full shadow-lg"
+            <div>
+              <h2
+                class="text-md font-bold text-gray-800 dark:text-gray-200 mb-2"
               >
-                <Icon name="lucide:heart" size="16" />
+                Твій баланс
+              </h2>
+              <div class="flex items-center gap-1">
+                <p
+                  class="text-md font-bold text-[#7B68EE] dark:text-[#8B7EFF]"
+                >
+                  {{ studentBalance }}
+                </p>
+                <NuxtImg src="/lgk.svg" width="15" />
               </div>
-              <div
-                v-else-if="!canAffordProduct(product)"
-                class="flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-full shadow-lg"
+            </div>
+            <div v-if="currentWishlistCost > 0">
+              <h2
+                class="text-md font-bold text-gray-800 dark:text-gray-200 mb-2"
               >
-                <Icon name="lucide:lock" size="16" />
+                Залишок
+              </h2>
+              <div class="flex items-center gap-1">
+                <p
+                  class="text-md font-bold text-[#7B68EE] dark:text-[#8B7EFF]"
+                >
+                  {{ remainingBalance }}
+                </p>
+                <NuxtImg src="/lgk.svg" width="15" />
               </div>
             </div>
           </div>
 
-          <div class="flex-1 flex flex-col justify-between">
-            <div>
-              <h3
-                class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-200"
-                :class="
-                  !canAffordProduct(product) && !product.isInWishlist
-                    ? 'opacity-60'
-                    : ''
-                "
+          <!-- Прогрес бар -->
+          <div class="mb-4">
+            <div
+              class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"
+            >
+              <span>Використано логіків</span>
+              <span
+                >{{
+                  Math.round(
+                    (currentWishlistCost / Math.max(studentBalance, 1)) * 100
+                  )
+                }}%</span
               >
-                {{ product.name }}
-              </h3>
-              <p
-                class="text-gray-500 dark:text-gray-400 mb-4 transition-colors duration-200"
-                :class="
-                  !canAffordProduct(product) && !product.isInWishlist
-                    ? 'opacity-60'
-                    : ''
-                "
-              >
-                {{ product.description }}
-              </p>
             </div>
-
-            <div class="mt-4">
-              <button
-                @click="toggleWishlist(product)"
-                class="w-full font-bold py-3 rounded-xl transition duration-300 flex justify-center items-center gap-2"
-                :class="{
-                  'bg-[#7B68EE] hover:bg-[#7B68EE]/90 text-white cursor-pointer':
-                    product.isInWishlist,
-                  'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-pointer':
-                    !product.isInWishlist && canAffordProduct(product),
-                  'border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed':
-                    !product.isInWishlist && !canAffordProduct(product),
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              <div
+                class="h-3 rounded-full transition-all duration-300"
+                :class="
+                  currentWishlistCost > studentBalance
+                    ? 'bg-red-500'
+                    : 'bg-[#7B68EE] dark:bg-[#8B7EFF]'
+                "
+                :style="{
+                  width: `${Math.min(
+                    (currentWishlistCost / Math.max(studentBalance, 1)) * 100,
+                    100
+                  )}%`,
                 }"
-                :disabled="!product.isInWishlist && !canAffordProduct(product)"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Швидкі дії -->
+          <div class="flex flex-wrap gap-3">
+            <NuxtLink to="/student/wishlist">
+              <button
+                class="cursor-pointer bg-[#7B68EE] dark:bg-[#8B7EFF] hover:bg-[#7B68EE]/80 dark:hover:bg-[#8B7EFF]/90 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center gap-2"
               >
-                <Icon
-                  :name="
-                    product.isInWishlist
-                      ? 'lucide:heart-off'
-                      : canAffordProduct(product)
-                      ? 'lucide:plus'
-                      : 'lucide:lock'
-                  "
-                  size="20"
-                />
-                <span>
-                  {{
-                    product.isInWishlist
-                      ? "Видалити з вішліста"
-                      : canAffordProduct(product)
-                      ? "Додати до вішлісту"
-                      : "Недоступно"
-                  }}
+                <Icon name="lucide:heart" size="16" />
+                <span>Переглянути вішліст</span>
+                <span v-if="totalWishlistItems > 0" class="bg-white/20 px-2 py-1 rounded-full text-xs">
+                  {{ totalWishlistItems }}
                 </span>
               </button>
+            </NuxtLink>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-32">
+          <div
+            v-for="(product, index) in products"
+            :key="index"
+            class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl dark:shadow-gray-900/20 flex flex-col justify-between transition-all duration-200 border border-gray-200 dark:border-gray-700"
+          >
+            <div
+              class="relative mb-4 flex justify-center items-center h-40 bg-gray-100 dark:bg-gray-700 rounded-xl transition-colors duration-200"
+            >
+              <Icon
+                :name="product.icon"
+                size="60"
+                class="text-[#7B68EE] dark:text-[#8B7EFF] transition-colors duration-200"
+                :class="
+                  !canAffordAnother(product) && product.quantity === 0
+                    ? 'opacity-50'
+                    : ''
+                "
+              />
+              <div
+                class="absolute top-3 right-3 flex items-center justify-center w-12 h-12 bg-[#7B68EE] dark:bg-[#8B7EFF] text-white font-bold text-sm rounded-full shadow-lg transition-colors duration-200"
+                :class="
+                  !canAffordAnother(product) && product.quantity === 0
+                    ? 'bg-gray-400 dark:bg-gray-600'
+                    : ''
+                "
+              >
+                {{ product.price }}
+              </div>
+
+              <!-- Іконки статусу -->
+              <div class="absolute top-3 left-3">
+                <div
+                  v-if="product.quantity > 0"
+                  class="flex items-center justify-center w-8 h-8 bg-[#7B68EE] text-white rounded-full shadow-lg"
+                >
+                  <span class="text-xs font-bold">{{ product.quantity }}</span>
+                </div>
+                <div
+                  v-else-if="!canAffordAnother(product)"
+                  class="flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-full shadow-lg"
+                >
+                  <Icon name="lucide:lock" size="16" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-between">
+              <div>
+                <h3
+                  class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-200"
+                  :class="
+                    !canAffordAnother(product) && product.quantity === 0
+                      ? 'opacity-60'
+                      : ''
+                  "
+                >
+                  {{ product.name }}
+                </h3>
+                <p
+                  class="text-gray-500 dark:text-gray-400 mb-4 transition-colors duration-200"
+                  :class="
+                    !canAffordAnother(product) && product.quantity === 0
+                      ? 'opacity-60'
+                      : ''
+                  "
+                >
+                  {{ product.description }}
+                </p>
+                <div v-if="product.quantity > 0" class="flex items-center gap-1 mb-2">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Загальна вартість:</span>
+                  <span class="text-sm font-bold text-[#7B68EE] dark:text-[#8B7EFF]">
+                    {{ product.price * product.quantity }}
+                  </span>
+                  <NuxtImg src="/lgk.svg" width="12" />
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <!-- Логіка лічильника -->
+                <div
+                  v-if="product.quantity > 0"
+                  class="flex items-center justify-center gap-2"
+                >
+                  <button
+                    @click="decrementQuantity(product)"
+                    class="cursor-pointer w-12 h-12 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    <Icon name="lucide:minus" size="20" />
+                  </button>
+                  <span class="text-xl font-bold w-12 text-center">{{
+                    product.quantity
+                  }}</span>
+                  <button
+                    @click="incrementQuantity(product)"
+                    :disabled="!canAffordAnother(product)"
+                    class="cursor-pointer w-12 h-12 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Icon name="lucide:plus" size="20" />
+                  </button>
+                </div>
+                <button
+                  v-else
+                  @click="addToWishlist(product)"
+                  class="w-full font-bold py-3 rounded-xl transition duration-300 flex justify-center items-center gap-2"
+                  :class="{
+                    'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-pointer':
+                      canAffordAnother(product),
+                    'border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed':
+                      !canAffordAnother(product),
+                  }"
+                  :disabled="!canAffordAnother(product)"
+                >
+                  <Icon
+                    :name="
+                      canAffordAnother(product) ? 'lucide:plus' : 'lucide:lock'
+                    "
+                    size="20"
+                  />
+                  <span>
+                    {{
+                      canAffordAnother(product)
+                        ? "Додати до вішлісту"
+                        : "Недоступно"
+                    }}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -219,156 +254,133 @@ useHead({
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useSupabaseUser, useSupabaseClient } from "#imports";
-import { products } from "@/constants/student/products";
+import { products as staticProducts } from "@/constants/student/products";
 
 const user = useSupabaseUser();
 const client = useSupabaseClient();
-const userWishlist = ref([]);
-const studentBalance = ref(0);
 
-// Обчислення поточної вартості вішліста
+const isLoading = ref(true);
+const products = ref(
+  staticProducts.value.map((p) => ({ ...p, quantity: 0 }))
+);
+const studentBalance = ref(0);
+let debounceTimer: NodeJS.Timeout;
+
 const currentWishlistCost = computed(() => {
-  return userWishlist.value.reduce(
-    (total, product) => total + (product.price || 0),
+  return products.value.reduce(
+    (total, product) => total + product.price * product.quantity,
     0
   );
 });
 
-// Обчислення залишку балансу після вішліста
 const remainingBalance = computed(() => {
-  return Math.max(0, studentBalance.value - currentWishlistCost.value);
+  return studentBalance.value - currentWishlistCost.value;
 });
 
-// Функція для перевірки, чи може студент дозволити собі товар
-function canAffordProduct(product) {
-  if (product.isInWishlist) return true;
+const totalWishlistItems = computed(() => {
+  return products.value.reduce((total, product) => total + product.quantity, 0);
+});
+
+function canAffordAnother(product) {
   return remainingBalance.value >= product.price;
 }
 
 async function fetchData() {
-  if (user.value) {
+  if (!user.value) {
+    isLoading.value = false;
+    return;
+  }
+
+  isLoading.value = true;
+  try {
     const { data, error } = await client
       .from("students")
       .select("wishlist, student_balance")
       .eq("student_login", user.value.email)
       .single();
 
-    if (error) {
-      console.error("Помилка отримання даних:", error.message);
-      userWishlist.value = [];
-      studentBalance.value = 0;
-    } else {
-      userWishlist.value = data?.wishlist || [];
-      studentBalance.value = data?.student_balance || 0;
+    if (error) throw error;
 
-      products.value.forEach((product) => {
-        const isInList = userWishlist.value.some(
-          (item) => item.name === product.name
-        );
-        product.isInWishlist = isInList;
-      });
-    }
+    const userWishlist = data?.wishlist || [];
+    studentBalance.value = data?.student_balance || 0;
+
+    products.value.forEach((product) => {
+      const wishlistItem = userWishlist.find(
+        (item) => item.name === product.name
+      );
+      product.quantity = wishlistItem ? wishlistItem.quantity : 0;
+    });
+  } catch (error) {
+    console.error("Помилка отримання даних:", error.message);
+    studentBalance.value = 0;
+    products.value.forEach((p) => (p.quantity = 0));
+  } finally {
+    isLoading.value = false;
   }
 }
 
-async function toggleWishlist(product) {
+async function updateWishlistInSupabase() {
   if (!user.value) return;
 
-  if (product.isInWishlist) {
-    // Видалення з вішліста
-    const updatedWishlist = userWishlist.value.filter(
-      (item) => item.name !== product.name
-    );
-
-    const { error } = await client
-      .from("students")
-      .update({ wishlist: updatedWishlist })
-      .eq("student_login", user.value.email);
-
-    if (error) {
-      console.error("Помилка видалення товару з вішліста:", error.message);
-    } else {
-      userWishlist.value = updatedWishlist;
-      product.isInWishlist = false;
-      console.log(`Товар "${product.name}" видалено з вішліста.`);
-    }
-  } else if (canAffordProduct(product)) {
-    // Додавання до вішліста
-    const updatedWishlist = [...userWishlist.value, product];
-
-    const { error } = await client
-      .from("students")
-      .update({ wishlist: updatedWishlist })
-      .eq("student_login", user.value.email);
-
-    if (error) {
-      console.error("Помилка додавання товару до вішліста:", error.message);
-    } else {
-      userWishlist.value = updatedWishlist;
-      product.isInWishlist = true;
-      console.log(`Товар "${product.name}" додано до вішліста.`);
-    }
-  }
-}
-
-// Функція для оптимізації вішліста (залишити тільки доступні товари)
-async function optimizeWishlist() {
-  if (!user.value) return;
-
-  const sortedWishlist = [...userWishlist.value].sort(
-    (a, b) => a.price - b.price
-  );
-  const optimizedWishlist = [];
-  let currentTotal = 0;
-
-  for (const product of sortedWishlist) {
-    if (currentTotal + product.price <= studentBalance.value) {
-      optimizedWishlist.push(product);
-      currentTotal += product.price;
-    }
-  }
+  const wishlistToSave = products.value
+    .filter((p) => p.quantity > 0)
+    .map((p) => ({
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      icon: p.icon,
+      quantity: p.quantity,
+    }));
 
   const { error } = await client
     .from("students")
-    .update({ wishlist: optimizedWishlist })
+    .update({ wishlist: wishlistToSave })
     .eq("student_login", user.value.email);
 
   if (error) {
-    console.error("Помилка оптимізації вішліста:", error.message);
+    console.error("Помилка оновлення вішліста:", error.message);
   } else {
-    userWishlist.value = optimizedWishlist;
-
-    // Оновлюємо статус товарів
-    products.value.forEach((product) => {
-      const isInList = optimizedWishlist.some(
-        (item) => item.name === product.name
-      );
-      product.isInWishlist = isInList;
-    });
-
-    console.log("Вішліст оптимізовано!");
+    console.log("Вішліст успішно оновлено.");
   }
 }
 
-onMounted(() => {
-  fetchData();
-});
+function debouncedUpdate() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    updateWishlistInSupabase();
+  }, 500);
+}
 
-watch(
-  user,
-  (newUser) => {
-    if (newUser) {
-      fetchData();
-    } else {
-      userWishlist.value = [];
-      studentBalance.value = 0;
-      products.value.forEach((p) => (p.isInWishlist = false));
-    }
-  },
-  { immediate: true }
-);
+function addToWishlist(product) {
+  if (canAffordAnother(product)) {
+    product.quantity = 1;
+    debouncedUpdate();
+  }
+}
 
-definePageMeta({
-  middleware: ["admin-auth"],
+function incrementQuantity(product) {
+  if (canAffordAnother(product)) {
+    product.quantity++;
+    debouncedUpdate();
+  }
+}
+
+function decrementQuantity(product) {
+  if (product.quantity > 0) {
+    product.quantity--;
+    debouncedUpdate();
+  }
+}
+
+onMounted(fetchData);
+
+watch(user, (newUser) => {
+  if (newUser) {
+    fetchData();
+  } else {
+    studentBalance.value = 0;
+    products.value.forEach((p) => (p.quantity = 0));
+    isLoading.value = false;
+  }
 });
 </script>
