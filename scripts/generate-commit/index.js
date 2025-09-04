@@ -9,7 +9,7 @@ async function loadPrompt(templatePath) {
 }
 
 async function generateCommitMessage(diffText) {
-  const context = await loadPrompt("./scripts/generate-commit/context.txt");
+  const context = await loadPrompt("./scripts/generate-commit/CONTEXT.md");
   const prompt = `${context}\n\nGit diff:\n${diffText}`;
 
   const response = await ollama.chat({
