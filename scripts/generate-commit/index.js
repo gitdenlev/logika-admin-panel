@@ -3,6 +3,7 @@ import ollama from "ollama";
 import { execSync } from "child_process";
 import boxen from "boxen";
 import chalk from "chalk";
+import ora from "ora";
 
 async function loadPrompt(templatePath) {
   return await fs.readFile(templatePath, "utf-8");
@@ -44,6 +45,7 @@ function logBox(message, color = "blue", icon = "ℹ️") {
 }
 
 export async function main() {
+  let spinner;
   try {
     // Автоматично додати всі файли у staging
     execSync("git add .", { stdio: "inherit" });
@@ -51,26 +53,35 @@ export async function main() {
     const realDiff = execSync("git diff --staged").toString().trim();
 
     if (!realDiff) {
-      logBox("No staged changes. Nothing to commit.", "yellow", "⚠️");
+      logBox("Зміни для коміту відсутні.", "yellow", "⚠️");
       return;
     }
 
-    logBox("Generating commit message... Please wait.", "blue", "🤖");
-
+    spinner = ora(
+      chalk.cyan("🤖 Генеруємо повідомлення для коміту... Будь ласка, зачекайте.")
+    ).start();
     const rawCommitMessage = await generateCommitMessage(realDiff);
     const commitMessage = sanitizeMessage(rawCommitMessage);
-
-    logBox(
-      `Commit message to be used:\n\n${chalk.green(`"${commitMessage}"`)}`,
-      "green",
-      "✨"
+    spinner.succeed(
+      chalk.green("✨ Повідомлення для коміту успішно згенеровано!")
     );
 
-    execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
+    logBox(
+      `Повідомлення, що буде використано:\n\n${chalk.bold.green(
+        `"${commitMessage}"`
+      )}`,
+      "green",
+      "📝"
+    );
 
-    logBox("Commit created successfully!", "green", "✅");
+    execSync(`git commit -m \"${commitMessage}\"`, { stdio: "inherit" });
+
+    logBox("Коміт успішно створено!", "green", "✅");
   } catch (error) {
-    logBox(`Error: ${error.message}`, "red", "💥");
+    if (spinner) {
+      spinner.fail(chalk.red("💥 Сталася помилка."));
+    }
+    logBox(`Помилка: ${error.message}`, "red", "💥");
   }
 }
 
