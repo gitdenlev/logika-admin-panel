@@ -1,12 +1,12 @@
-#!/usr/bin/env node
 import inquirer from "inquirer";
 import chalk from "chalk";
 import figlet from "figlet";
-import { main as commitMain } from "./generate-commit/index.js";
-import { main as commentsMain } from "./generate-comments/index.js";
+import { execSync } from "child_process";
 
 // Вітання
-console.log(chalk.blue(figlet.textSync("Voro", { horizontalLayout: "full" })));
+console.log(
+  chalk.blue(figlet.textSync("Voro", { horizontalLayout: "full" }))
+);
 
 console.log(chalk.cyan("🚀 Welcome to Code Helper\n"));
 
@@ -20,7 +20,8 @@ async function mainMenu() {
     },
     {
       name:
-        chalk.yellow("📝 Echo Notes") + chalk.gray(" - Add AI comments to your code"),
+        chalk.yellow("📝 Echo Notes") +
+        chalk.gray(" - Add AI comments to your code"),
       value: "comments",
     },
     {
@@ -39,11 +40,10 @@ async function mainMenu() {
   ]);
 
   if (answer.action === "commit") {
-    await commitMain();
+    execSync("node ./scripts/generate-commit/index.js", { stdio: "inherit" });
   } else if (answer.action === "comments") {
-    await commentsMain();
+    execSync("node ./scripts/generate-comments/index.js", { stdio: "inherit" });
   } else {
-    console.log(chalk.blue("👋 Goodbye!"));
     process.exit(0);
   }
 }
