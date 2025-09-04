@@ -77,10 +77,9 @@ export async function main() {
         borderColor: "green",
       })
     );
-
+    
     execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
 
-    logBox("Коміт успішно створено!", "green", "✅");
   } catch (error) {
     if (spinner) {
       spinner.fail(chalk.red("💥 Сталася помилка."));
