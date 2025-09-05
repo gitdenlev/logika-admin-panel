@@ -4,29 +4,43 @@
       <div class="mx-auto">
         <div class="flex items-center justify-between mb-8">
           <h1 class="text-2xl font-bold text-gray-600 dark:text-gray-100">
-            {{ activeRatingType === 'balance' ? 'Таблиця успіху' : 'Герої донатів' }}
+            {{
+              activeRatingType === "balance"
+                ? "Таблиця успіху"
+                : "Герої донатів"
+            }}
           </h1>
           <StudentRatingTypeSwitcher v-model="activeRatingType" />
         </div>
 
-        <div v-if="isLoading">
-          <!-- Можна додати компонент завантажувача -->
-          <p>Завантаження...</p>
+        <div class="fixed inset-0" v-if="isLoading">
+          <div
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          >
+            <Loader />
+          </div>
         </div>
-        <StudentRatingTable v-else :students="sortedStudents" :rating-type="activeRatingType" />
+        <StudentRatingTable
+          v-else
+          :students="sortedStudents"
+          :rating-type="activeRatingType"
+        />
       </div>
     </div>
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useStudents } from '~/composables/useStudents';
+import { ref, computed } from "vue";
+import { useAsyncData } from "#app";
 
 useHead({
   title: "Рейтинг",
   meta: [
-    { name: "description", content: "Статистика, рейтинг, досягнення та магазини ЛКГ" },
+    {
+      name: "description",
+      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+    },
     { name: "robots", content: "index, follow" },
   ],
   link: [
@@ -35,18 +49,22 @@ useHead({
   ],
 });
 
-const { students, isLoading, fetchStudents } = useStudents();
-const activeRatingType = ref<'balance' | 'donated'>("balance");
+const { data: students, pending: isLoading } = await useAsyncData(
+  "rating-fetch",
+  () => $fetch("/api/getRating")
+);
+
+const activeRatingType = ref<"balance" | "donated">("balance");
 
 const sortedStudents = computed(() => {
-  const property = activeRatingType.value === 'balance' ? 'student_balance' : 'donated_points';
-  
-  const filtered = students.value.filter(student => student[property] > 0);
-  
-  return [...filtered].sort((a, b) => b[property] - a[property]);
-});
+  if (!students.value) {
+    return [];
+  }
+  const property =
+    activeRatingType.value === "balance" ? "student_balance" : "total_donated";
 
-onMounted(() => {
-  fetchStudents();
+  const filtered = students.value.filter((student) => student[property] > 0);
+
+  return [...filtered].sort((a, b) => b[property] - a[property]);
 });
 </script>

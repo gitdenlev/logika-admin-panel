@@ -8,7 +8,7 @@
           <h3
             class="sm:text-2xl font-bold text-gray-600 dark:text-gray-200 flex flex-col sm:flex-row items-start sm:items-center gap-2 transition-colors duration-200"
           >
-            <span>Наш внесок у допомогу ЗСУ</span>
+            <span>🇺🇦 Наш внесок у допомогу ЗСУ</span>
           </h3>
           <p
             class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 italic transition-colors duration-200"
@@ -23,7 +23,8 @@
               <span>Зібрано:</span>
               <span class="flex items-center gap-2">
                 <span ref="pointsCounter">0</span>
-                <span class="text-gray-500 dark:text-gray-400 transition-colors duration-200"
+                <span
+                  class="text-gray-500 dark:text-gray-400 transition-colors duration-200"
                   >із {{ donationGoal }}</span
                 >
               </span>
@@ -41,23 +42,56 @@
                 "
               ></div>
             </div>
-
-            <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm transition-colors duration-200">
-              Загальна сума
-            </p>
-            <p
-              class="text-[#7B68EE] dark:text-[#8B7EFF] font-bold text-2xl sm:text-3xl mt-1 flex items-center gap-2 transition-colors duration-200"
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md transition-colors duration-200 border border-gray-200 dark:border-gray-700"
             >
-              <span ref="moneyCounter">0</span> грн
-            </p>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Наш внесок за цей місяць
+              </p>
+              <p
+                class="italic text-2xl font-bold text-[#7B68EE] dark:text-[#8B7EFF] flex items-center gap-1"
+              >
+                {{ donationStats.monthly }}
+                <NuxtImg src="/lgk.svg" width="18" /> =
+                {{
+                  (donationStats.monthly * 1.5).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })
+                }}
+                грн
+              </p>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md transition-colors duration-200 border border-gray-200 dark:border-gray-700"
+            >
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Наш внесок за весь час
+              </p>
+              <p
+                class="italic text-2xl font-bold text-[#7B68EE] dark:text-[#8B7EFF] flex items-center gap-1"
+              >
+                {{ donationStats.total }}
+                <NuxtImg src="/lgk.svg" width="18" /> =
+                {{
+                  (donationStats.total * 1.5).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })
+                }}
+                грн
+              </p>
+            </div>
           </div>
           <div>
             <div
               class="flex flex-col sm:flex-row sm:items-center gap-1 text-gray-500 dark:text-gray-400 text-xs mb-4 mt-2 transition-colors duration-200"
             >
-              <span class="flex items-center gap-1">
-                1 <NuxtImg src="/lgk.svg" width="10" /> = 1.5₴
+              <span class="flex items-center gap-0.5">
+                1 <NuxtImg src="/lgk.svg" width="10" />
               </span>
+              <span>=</span>
+              <span> 1.5₴ </span>
               <span class="hidden sm:inline">•</span>
               <span class="text-xs"
                 >Кошти йдуть безпосередньо на потреби ЗСУ</span
@@ -81,7 +115,9 @@
     :open="isDonationDialogOpen"
     @update:open="isDonationDialogOpen = $event"
   >
-    <DialogContent class="w-[300px] bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors duration-200 border border-gray-200 dark:border-gray-700">
+    <DialogContent
+      class="w-[300px] bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
+    >
       <DialogHeader>
         <div
           class="flex mx-auto justify-center gap-1 text-sm text-gray-500 dark:text-gray-300 mt-2 rounded-full px-2 py-1 bg-[#7B68EE]/30 dark:bg-[#8B7EFF]/30 w-fit transition-colors duration-200"
@@ -94,7 +130,12 @@
       </DialogHeader>
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="donation-amount" class="text-right text-gray-600 dark:text-gray-300 transition-colors duration-200"> Сума </Label>
+          <Label
+            for="donation-amount"
+            class="text-right text-gray-600 dark:text-gray-300 transition-colors duration-200"
+          >
+            Сума
+          </Label>
           <Input
             id="donation-amount"
             v-model.number="donationAmount"
@@ -166,7 +207,10 @@
 useHead({
   title: "Армія",
   meta: [
-    { name: "description", content: "Статистика, рейтинг, досягнення та магазини ЛКГ" },
+    {
+      name: "description",
+      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+    },
     { name: "robots", content: "index, follow" },
   ],
   link: [
@@ -193,7 +237,7 @@ let jsConfetti: JSConfetti;
 const client = useSupabaseClient();
 const user = useSupabaseUser();
 
-const totalDonatedPoints = ref(0);
+const donationStats = ref({ total: 0, monthly: 0 });
 const donationGoal = ref(1500);
 const studentProfile = ref(null);
 
@@ -208,7 +252,10 @@ const progressBar = ref(null);
 
 const progressPercentage = computed(() => {
   if (donationGoal.value === 0) return 0;
-  return Math.min((totalDonatedPoints.value / donationGoal.value) * 100, 100);
+  return Math.min(
+    (donationStats.value.monthly / donationGoal.value) * 100,
+    100
+  );
 });
 
 const animateCounter = (element, startValue, endValue, duration = 2) => {
@@ -235,16 +282,21 @@ const animateProgressBar = (percentage) => {
 
 const startAnimations = async () => {
   await nextTick();
-  animateCounter(pointsCounter.value, 0, totalDonatedPoints.value, 2);
-  animateCounter(moneyCounter.value, 0, totalDonatedPoints.value * 1.5, 2);
+  animateCounter(pointsCounter.value, 0, donationStats.value.monthly, 2);
+  animateCounter(moneyCounter.value, 0, donationStats.value.monthly * 1.5, 2);
   animateProgressBar(progressPercentage.value);
 };
 
-const updateDataWithAnimation = (newPoints) => {
-  const oldPoints = totalDonatedPoints.value;
-  totalDonatedPoints.value = newPoints;
-  animateCounter(pointsCounter.value, oldPoints, newPoints, 1.5);
-  animateCounter(moneyCounter.value, oldPoints * 1.5, newPoints * 1.5, 1.5);
+const updateDataWithAnimation = (newMonthlyPoints) => {
+  const oldPoints = donationStats.value.monthly;
+  donationStats.value.monthly = newMonthlyPoints;
+  animateCounter(pointsCounter.value, oldPoints, newMonthlyPoints, 1.5);
+  animateCounter(
+    moneyCounter.value,
+    oldPoints * 1.5,
+    newMonthlyPoints * 1.5,
+    1.5
+  );
   gsap.to(progressBar.value, {
     width: `${progressPercentage.value}%`,
     duration: 1.5,
@@ -252,20 +304,24 @@ const updateDataWithAnimation = (newPoints) => {
   });
 };
 
-async function fetchTotalDonations() {
-  const { data, error } = await client
-    .from("zsu_donations")
-    .select("total_points")
-    .eq("id", 1)
-    .single();
+async function fetchDonationStats() {
+  try {
+    const data = await $fetch("/api/getDonationStats");
+    if (data) {
+      const isFirstLoad =
+        donationStats.value.total === 0 && donationStats.value.monthly === 0;
 
-  if (!error) {
-    if (totalDonatedPoints.value === 0) {
-      totalDonatedPoints.value = data.total_points;
-      startAnimations();
-    } else {
-      updateDataWithAnimation(data.total_points);
+      donationStats.value.total = data.totalDonations;
+
+      if (isFirstLoad) {
+        donationStats.value.monthly = data.monthlyDonations;
+        startAnimations();
+      } else {
+        updateDataWithAnimation(data.monthlyDonations);
+      }
     }
+  } catch (error) {
+    console.error("Failed to fetch donation stats:", error);
   }
 }
 
@@ -273,7 +329,7 @@ async function fetchStudentProfile() {
   if (user.value) {
     const { data, error } = await client
       .from("students")
-      .select("id, student_balance, donated_points")
+      .select("id, student_balance")
       .eq("student_login", user.value.email)
       .single();
 
@@ -294,37 +350,17 @@ const handleDonation = async () => {
   isProcessing.value = true;
 
   try {
-    const newBalance = studentProfile.value.student_balance - donationAmount.value;
-    const newDonatedPoints = (studentProfile.value.donated_points || 0) + donationAmount.value;
+    const { error } = await $fetch("/api/donate", {
+      method: "POST",
+      body: {
+        studentId: studentProfile.value.id,
+        amount: donationAmount.value,
+      },
+    });
 
-    const { error: studentError } = await client
-      .from("students")
-      .update({
-        student_balance: newBalance,
-        donated_points: newDonatedPoints,
-      })
-      .eq("id", studentProfile.value.id);
+    if (error) throw error;
 
-    if (studentError) throw studentError;
-
-    const { data: currentDonations, error: fetchError } = await client
-      .from("zsu_donations")
-      .select("total_points")
-      .eq("id", 1)
-      .single();
-
-    if (fetchError) throw fetchError;
-
-    const newTotalPoints = currentDonations.total_points + donationAmount.value;
-
-    const { error: updateError } = await client
-      .from("zsu_donations")
-      .update({ total_points: newTotalPoints })
-      .eq("id", 1);
-
-    if (updateError) throw updateError;
-
-    await fetchTotalDonations();
+    await fetchDonationStats();
     await fetchStudentProfile();
 
     donationAmount.value = null;
@@ -340,7 +376,7 @@ const handleDonation = async () => {
       emojiSize: 80,
       confettiNumber: 40,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Помилка під час донату:", error.message);
   } finally {
     isProcessing.value = false;
@@ -348,12 +384,12 @@ const handleDonation = async () => {
 };
 
 onMounted(async () => {
-  await fetchTotalDonations();
+  await fetchDonationStats();
   await fetchStudentProfile();
   jsConfetti = new JSConfetti();
 
   setInterval(() => {
-    fetchTotalDonations();
+    fetchDonationStats();
     fetchStudentProfile();
   }, 10000);
 });

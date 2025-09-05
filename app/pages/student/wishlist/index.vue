@@ -86,33 +86,15 @@
               </div>
 
               <div class="space-y-6">
-                <!-- Лічильник кількості -->
-                <div class="flex items-center justify-center gap-2">
+                <!-- Кнопка переходу до магазину -->
+                <NuxtLink to="/student/store">
                   <button
-                    @click="decrementQuantity(product)"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                    class="cursor-pointer w-full bg-[#7B68EE] dark:bg-[#8B7EFF] hover:bg-[#7B68EE]/80 dark:hover:bg-[#8B7EFF]/90 text-white font-bold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2"
                   >
-                    <Icon name="lucide:minus" size="18" />
+                    <Icon name="lucide:store" size="20" />
+                    <span>Перейти до магазину</span>
                   </button>
-                  <span class="text-lg font-bold w-12 text-center">{{
-                    product.quantity
-                  }}</span>
-                  <button
-                    @click="incrementQuantity(product)"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    <Icon name="lucide:plus" size="18" />
-                  </button>
-                </div>
-
-                <!-- Кнопка видалення -->
-                <button
-                  @click="removeFromWishlist(product)"
-                  class="cursor-pointer w-full bg-red-400 hover:bg-red-500 text-white font-bold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2"
-                >
-                  <Icon name="lucide:trash-2" size="20" />
-                  <span>Видалити з вішлісту</span>
-                </button>
+                </NuxtLink>
               </div>
             </div>
           </div>
@@ -166,7 +148,6 @@ import { useSupabaseUser, useSupabaseClient } from "#imports";
 const user = useSupabaseUser();
 const client = useSupabaseClient();
 const wishlist = ref([]);
-let debounceTimer: NodeJS.Timeout;
 
 // Обчислювані властивості
 const totalWishlistItems = computed(() => {
@@ -194,85 +175,22 @@ async function fetchWishlist() {
         console.error("Помилка отримання вішліста:", error.message);
         wishlist.value = [];
       } else {
-        wishlist.value = data?.wishlist || [];
+        if (data?.wishlist && typeof data.wishlist === "string") {
+          try {
+            const parsedWishlist = JSON.parse(data.wishlist);
+            wishlist.value = Array.isArray(parsedWishlist) ? parsedWishlist : [];
+          } catch (e) {
+            console.error("Error parsing wishlist:", e);
+            wishlist.value = [];
+          }
+        } else {
+          wishlist.value = data?.wishlist || [];
+        }
       }
-    } catch (error) {
-      console.error("Помилка отримання вішліста:", error);
+    } catch (error: any) {
+      console.error("Помилка отримання вішліста:", error.message);
       wishlist.value = [];
     }
-  }
-}
-
-// Функція для оновлення вішліста в базі даних
-async function updateWishlistInSupabase() {
-  if (!user.value) return;
-
-  const wishlistToSave = wishlist.value.filter((item) => item.quantity > 0);
-
-  try {
-    const { error } = await client
-      .from("students")
-      .update({ wishlist: wishlistToSave })
-      .eq("student_login", user.value.email);
-
-    if (error) {
-      console.error("Помилка оновлення вішліста:", error.message);
-    } else {
-      console.log("Вішліст успішно оновлено.");
-    }
-  } catch (error) {
-    console.error("Помилка оновлення вішліста:", error);
-  }
-}
-
-// Функція з debounce для оновлення
-function debouncedUpdate() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    updateWishlistInSupabase();
-  }, 500);
-}
-
-// Функція для видалення товару з вішліста
-async function removeFromWishlist(product) {
-  if (user.value) {
-    // Оновлюємо локальний список
-    wishlist.value = wishlist.value.filter(
-      (item) => item.name !== product.name
-    );
-
-    // Оновлюємо базу даних
-    debouncedUpdate();
-
-    console.log(`Товар "${product.name}" прибрано з вішліста.`);
-  }
-}
-
-// Функції для зміни кількості товару
-function incrementQuantity(product) {
-  const item = wishlist.value.find((item) => item.name === product.name);
-  if (item) {
-    item.quantity++;
-    debouncedUpdate();
-  }
-}
-
-function decrementQuantity(product) {
-  const item = wishlist.value.find((item) => item.name === product.name);
-  if (item && item.quantity > 1) {
-    item.quantity--;
-    debouncedUpdate();
-  } else if (item && item.quantity === 1) {
-    // Якщо кількість стає 0, видаляємо товар з вішліста
-    removeFromWishlist(product);
-  }
-}
-
-// Функція для очищення всього вішліста
-async function clearWishlist() {
-  if (confirm("Ви впевнені, що хочете очистити весь вішліст?")) {
-    wishlist.value = [];
-    debouncedUpdate();
   }
 }
 

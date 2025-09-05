@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import ollama from "ollama";
 import { execSync } from "child_process";
-import boxen from "boxen";
 import chalk from "chalk";
 import ora from "ora";
 
@@ -33,17 +32,6 @@ function sanitizeMessage(raw) {
   return firstLine;
 }
 
-function logBox(message, color = "blue", icon = "ℹ️") {
-  console.log(
-    boxen(`${icon}  ${message}`, {
-      padding: 1,
-      margin: 1,
-      borderStyle: "round",
-      borderColor: color,
-    })
-  );
-}
-
 export async function main() {
   let spinner;
   try {
@@ -53,38 +41,31 @@ export async function main() {
     const realDiff = execSync("git diff --staged").toString().trim();
 
     if (!realDiff) {
-      logBox("Зміни для коміту відсутні.", "yellow", "⚠️");
+      console.log(chalk.hex("#DBA4FF")("There are no changes to the commit."));
       return;
     }
 
     spinner = ora(
-      chalk.cyan("🤖 Генеруємо повідомлення для коміту... Будь ласка, зачекайте.")
+      chalk.hex("#DBA4FF")("Generating commit message... Please wait.")
     ).start();
     const rawCommitMessage = await generateCommitMessage(realDiff);
     const commitMessage = sanitizeMessage(rawCommitMessage);
     spinner.succeed(
-      chalk.green("✨ Повідомлення для коміту успішно згенеровано!")
+      chalk.hex("#DBA4FF")("Done! Your commit message is ready.")
     );
 
     console.log(
-      chalk.bold.green("\n📝 Повідомлення, що буде використано:")
+      chalk.hex("#DBA4FF").bold("\n📝 Your commit message here:")
     );
-    console.log(
-      boxen(chalk.cyan(`"${commitMessage}"`), {
-        padding: 1,
-        margin: 1,
-        borderStyle: "double",
-        borderColor: "green",
-      })
-    );
+    console.log(chalk.hex("#DBA4FF")(`"${commitMessage}"`));
     
-    execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
+    // execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
 
   } catch (error) {
     if (spinner) {
-      spinner.fail(chalk.red("💥 Сталася помилка."));
+      spinner.fail(chalk.hex("#DBA4FF")("💥 Сталася помилка."));
     }
-    logBox(`Помилка: ${error.message}`, "red", "💥");
+    console.error(chalk.hex("#DBA4FF")(`💥 Помилка: ${error.message}`));
   }
 }
 

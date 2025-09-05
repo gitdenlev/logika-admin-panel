@@ -64,7 +64,7 @@
                   {{
                     ratingType === "balance"
                       ? student.student_balance
-                      : student.donated_points
+                      : student.total_donated
                   }}
                   <NuxtImg src="/lgk.svg" width="18" />
                 </div>

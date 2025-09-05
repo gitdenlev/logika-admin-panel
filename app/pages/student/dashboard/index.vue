@@ -72,14 +72,14 @@
             <div class="flex flex-col gap-4">
               <NuxtLink
                 to="/student/transactions"
-                class="w-full bg-[#7B68EE] hover:bg-[#7B68EE]/95 dark:bg-[#8B7EFF] dark:hover:bg-[#8B7EFF]/95 text-white font-bold py-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-sm hover:shadow-md hover:scale-[1.02]"
+                class="w-full bg-[#7B68EE] hover:bg-[#7B68EE]/95 dark:bg-[#8B7EFF] dark:hover:bg-[#8B7EFF]/95 text-white font-bold py-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-sm"
               >
                 <Icon name="majesticons:money-plus" size="20" />
                 <span>Переказати бали</span>
               </NuxtLink>
               <NuxtLink
                 to="/student/store"
-                class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-bold py-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-sm hover:shadow-md hover:scale-[1.02]"
+                class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-bold py-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 shadow-sm"
               >
                 <Icon name="lucide:shopping-bag" size="20" />
                 <span>Відвідати магазин</span>
@@ -131,21 +131,21 @@
 
               <div class="flex items-center gap-1 mt-1">
                 <p
-                  class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200"
+                  class="font-bold text-lg text-gray-600 dark:text-gray-400 transition-colors duration-200"
                 >
                   {{ nextGoal.price }}
                 </p>
-                <NuxtImg src="/lgk.svg" width="12" />
+                <NuxtImg src="/lgk.svg" width="15" />
               </div>
 
               <!-- Прогрес бар -->
               <div class="w-full">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                  <span class="font-bold text-xs text-gray-500 dark:text-gray-400">
                     {{ Math.min(studentProfile.balance, nextGoal.price) }} /
                     {{ nextGoal.price }}
                   </span>
-                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                  <span class="font-bold text-xs text-gray-500 dark:text-gray-400">
                     {{
                       Math.round(
                         (Math.min(studentProfile.balance, nextGoal.price) /
@@ -263,9 +263,9 @@
             </p>
             <NuxtLink
               to="/student/army"
-              class="w-full bg-[#7B68EE] hover:bg-[#7B68EE]/90 dark:bg-[#8B7EFF] dark:hover:bg-[#8B7EFF]/90 text-white font-bold py-5 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 text-xl hover:shadow-lg hover:scale-[1.02]"
+              class="w-full bg-[#7B68EE] hover:bg-[#7B68EE]/90 dark:bg-[#8B7EFF] dark:hover:bg-[#8B7EFF]/90 text-white font-bold py-4 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 text-xl"
             >
-              <Icon name="lucide:arrow-right-circle" size="25" />
+              <Icon name="lucide:arrow-right-circle" size="20" />
               <span>Зробити внесок</span>
             </NuxtLink>
           </div>
@@ -337,7 +337,7 @@ async function fetchDashboardData() {
     // 1. Отримання даних поточного користувача
     const { data: studentData, error: studentError } = await client
       .from("students")
-      .select("student_name, student_balance, student_login, donated_points")
+      .select("student_name, student_balance, student_login, total_donated, monthly_donated")
       .eq("student_login", user.value.email)
       .single();
 
@@ -348,7 +348,7 @@ async function fetchDashboardData() {
 
     studentProfile.value.name = studentData.student_name;
     studentProfile.value.balance = studentData.student_balance;
-    armyDonation.value.current = studentData.donated_points || 0;
+    armyDonation.value.current = studentData.monthly_donated;
 
     // 2. Отримання рейтингу
     await fetchUserRank();

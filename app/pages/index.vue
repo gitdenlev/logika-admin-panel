@@ -137,6 +137,16 @@ const handleStudentAdded = () => {
 const handleStudentDataChanged = () => {
   reloadStudents();
 };
+
+const resetMonthlyDonations = async () => {
+  try {
+    await $fetch("/api/resetMonthlyDonations", { method: "POST" });
+    alert("Щомісячні донати успішно скинуто!");
+  } catch (error) {
+    console.error("Помилка при скиданні щомісячних донатів:", error);
+    alert("Не вдалося скинути щомісячні донати.");
+  }
+};
 </script>
 
 <template>
@@ -157,6 +167,9 @@ const handleStudentDataChanged = () => {
         v-model:selected-course="selectedCourse"
         @student-added="handleStudentAdded"
       />
+      <button @click="resetMonthlyDonations" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        Обнулити місячні донати
+      </button>
       <h1 class="text-gray-700">
           Всього учнів: {{ students.length }}
         </h1>

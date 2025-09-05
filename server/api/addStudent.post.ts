@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
     const { data, error } = await client
       .from("students")
-      .insert([studentData])
+      .insert([{ ...studentData, total_donated: 0, monthly_donated: 0 }])
       .select();
 
     if (error) {

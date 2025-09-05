@@ -30,7 +30,7 @@
                 <p
                   class="text-md font-bold text-[#7B68EE] dark:text-[#8B7EFF]"
                 >
-                  {{ studentBalance }}
+                  {{ studentBalance || 0 }}
                 </p>
                 <NuxtImg src="/lgk.svg" width="15" />
               </div>
@@ -57,13 +57,9 @@
             <div
               class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"
             >
-              <span>Використано логіків</span>
+              <span>Використано</span>
               <span
-                >{{
-                  Math.round(
-                    (currentWishlistCost / Math.max(studentBalance, 1)) * 100
-                  )
-                }}%</span
+                >{{ progressPercentage }}%</span
               >
             </div>
             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
@@ -75,10 +71,7 @@
                     : 'bg-[#7B68EE] dark:bg-[#8B7EFF]'
                 "
                 :style="{
-                  width: `${Math.min(
-                    (currentWishlistCost / Math.max(studentBalance, 1)) * 100,
-                    100
-                  )}%`,
+                  width: `${progressPercentage}%`,
                 }"
               ></div>
             </div>
@@ -268,21 +261,37 @@ let debounceTimer: NodeJS.Timeout;
 
 const currentWishlistCost = computed(() => {
   return products.value.reduce(
-    (total, product) => total + product.price * product.quantity,
+    (total, product) => total + (product.price || 0) * (product.quantity || 0),
     0
   );
 });
 
 const remainingBalance = computed(() => {
-  return studentBalance.value - currentWishlistCost.value;
+  const balance = Number(studentBalance.value) || 0;
+  const cost = Number(currentWishlistCost.value) || 0;
+  return Math.max(0, balance - cost);
 });
 
 const totalWishlistItems = computed(() => {
-  return products.value.reduce((total, product) => total + product.quantity, 0);
+  return products.value.reduce((total, product) => total + (product.quantity || 0), 0);
+});
+
+const progressPercentage = computed(() => {
+  const balance = Number(studentBalance.value) || 0;
+  const cost = Number(currentWishlistCost.value) || 0;
+  
+  if (balance <= 0) return 0;
+  
+  const percentage = Math.round((cost / balance) * 100);
+  return Math.min(percentage, 100);
 });
 
 function canAffordAnother(product) {
-  return remainingBalance.value >= product.price;
+  const balance = Number(studentBalance.value) || 0;
+  const productPrice = Number(product.price) || 0;
+  const currentCost = Number(currentWishlistCost.value) || 0;
+  
+  return (balance - currentCost) >= productPrice;
 }
 
 async function fetchData() {
@@ -299,18 +308,51 @@ async function fetchData() {
       .eq("student_login", user.value.email)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Database error:", error);
+      throw error;
+    }
 
-    const userWishlist = data?.wishlist || [];
-    studentBalance.value = data?.student_balance || 0;
+    console.log("Fetched data:", data); // Debug log
 
+    // Безпечно парсимо баланс
+    const balance = data?.student_balance;
+    if (balance === null || balance === undefined || isNaN(balance)) {
+      console.warn("Invalid student_balance:", balance);
+      studentBalance.value = 0;
+    } else {
+      studentBalance.value = Number(balance);
+    }
+
+    console.log("Student balance set to:", studentBalance.value); // Debug log
+
+    // Безпечно парсимо вішліст
+    let userWishlist = [];
+    if (data?.wishlist) {
+      try {
+        if (typeof data.wishlist === 'string') {
+          userWishlist = JSON.parse(data.wishlist);
+        } else if (Array.isArray(data.wishlist)) {
+          userWishlist = data.wishlist;
+        } else {
+          console.warn("Unexpected wishlist format:", data.wishlist);
+          userWishlist = [];
+        }
+      } catch (e) {
+        console.error("Error parsing wishlist:", e);
+        userWishlist = [];
+      }
+    }
+
+    // Оновлюємо кількість товарів у вішлісті
     products.value.forEach((product) => {
       const wishlistItem = userWishlist.find(
         (item) => item.name === product.name
       );
-      product.quantity = wishlistItem ? wishlistItem.quantity : 0;
+      product.quantity = wishlistItem ? Number(wishlistItem.quantity) || 0 : 0;
     });
-  } catch (error) {
+
+  } catch (error: any) {
     console.error("Помилка отримання даних:", error.message);
     studentBalance.value = 0;
     products.value.forEach((p) => (p.quantity = 0));
@@ -326,21 +368,25 @@ async function updateWishlistInSupabase() {
     .filter((p) => p.quantity > 0)
     .map((p) => ({
       name: p.name,
-      price: p.price,
+      price: Number(p.price) || 0,
       description: p.description,
       icon: p.icon,
-      quantity: p.quantity,
+      quantity: Number(p.quantity) || 0,
     }));
 
-  const { error } = await client
-    .from("students")
-    .update({ wishlist: wishlistToSave })
-    .eq("student_login", user.value.email);
+  try {
+    const { error } = await client
+      .from("students")
+      .update({ wishlist: wishlistToSave })
+      .eq("student_login", user.value.email);
 
-  if (error) {
-    console.error("Помилка оновлення вішліста:", error.message);
-  } else {
-    console.log("Вішліст успішно оновлено.");
+    if (error) {
+      console.error("Помилка оновлення вішліста:", error.message);
+    } else {
+      console.log("Вішліст успішно оновлено.");
+    }
+  } catch (error) {
+    console.error("Network error updating wishlist:", error);
   }
 }
 
@@ -360,14 +406,14 @@ function addToWishlist(product) {
 
 function incrementQuantity(product) {
   if (canAffordAnother(product)) {
-    product.quantity++;
+    product.quantity = (product.quantity || 0) + 1;
     debouncedUpdate();
   }
 }
 
 function decrementQuantity(product) {
   if (product.quantity > 0) {
-    product.quantity--;
+    product.quantity = Math.max(0, (product.quantity || 0) - 1);
     debouncedUpdate();
   }
 }

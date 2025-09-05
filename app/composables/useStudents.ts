@@ -11,7 +11,7 @@ export function useStudents() {
     try {
       const { data, error } = await client
         .from("students")
-        .select("student_name, student_balance, donated_points");
+        .select("student_name, student_balance, donated_points, total_donated, monthly_donated");
 
       if (error) {
         console.error("Помилка при отриманні списку студентів:", error.message);

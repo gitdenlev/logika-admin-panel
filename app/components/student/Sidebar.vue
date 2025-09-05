@@ -54,7 +54,7 @@ const sidebarItems = [
   {
     title: "Магазин",
     link: "/student/store",
-    icon: "lucide:shopping-bag",
+    icon: "lucide:store",
   },
   {
     title: "Досягнення",
