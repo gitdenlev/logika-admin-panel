@@ -1,8 +1,12 @@
 <template>
   <Dialog :open="open" @update:open="handleOpenChange">
-    <DialogContent class="sm:max-w-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors duration-200">
+    <DialogContent
+      class="sm:max-w-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors duration-200"
+    >
       <DialogHeader>
-        <DialogTitle class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+        <DialogTitle
+          class="text-2xl font-bold text-gray-800 dark:text-gray-200"
+        >
           Мій профіль
         </DialogTitle>
         <DialogDescription class="text-gray-500 dark:text-gray-400">
@@ -41,6 +45,29 @@
               {{ studentProfile?.student_schedule || "Не визначено" }}
             </p>
           </div>
+        </div>
+
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 font-medium">
+            Навчальний центр
+          </p>
+           <p class="text-gray-800 dark:text-gray-200 font-semibold">
+            вул. Університетська 70Б
+          </p>
+          <div
+            class="mt-2 overflow-hidden rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d167.42482800845298!2d35.17670526818711!3d47.824146488048285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40dc5de2d26c59f1%3A0x496a3e534a12ced0!2z0JrQu9Cw0YHQuNGH0L3QuNC5INC_0YDQuNCy0LDRgtC90LjQuSDRg9C90ZbQstC10YDRgdC40YLQtdGC!5e0!3m2!1suk!2sua!4v1757778457979!5m2!1suk!2sua"
+              height="200"
+              class="w-full"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+         
         </div>
       </div>
     </DialogContent>

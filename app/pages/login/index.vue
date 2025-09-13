@@ -10,18 +10,16 @@ const user = useSupabaseUser();
 const email = ref("");
 const password = ref("");
 
-// Loading state indicator
+// Ref to track loading state
 const loading = ref(false);
 
-// Error message container
+// Ref to store error message, if any
 const errorMessage = ref<string | null>(null);
 
-// Set page title, meta tags, and icon with Nuxt's useHead hook
 useHead({
-  // Page title
-  title: "Logika Admin Panel - Вхід",
+  // Set page title and metadata
+  title: "Logika Invest - Вхід",
   
-  // Meta description and keywords for SEO
   meta: [
     {
       name: "description",
@@ -33,7 +31,7 @@ useHead({
     },
     {
       property: "og:description",
-      content: "Сторінка входу для адміністративної панелі управління студентами.",
+      content: "Сторінка входу для адміністративної.panель управління студентів.",
     },
     {
       name: "keywords",
@@ -51,7 +49,7 @@ useHead({
   ],
 });
 
-// Redirect unauthorized users to login on mount
+// Redirect user to dashboard if authenticated on mount
 watch(
   user,
   async (currentUser) => {
@@ -62,39 +60,39 @@ watch(
   { immediate: true }
 );
 
+
 /**
- * Perform sign-in with email and password when form is submitted.
+ * Handle email and password sign-in form submission.
  */
 async function signInWithEmail() {
   // Set loading state to true
   loading.value = true;
   
-  // Clear previous error message
+  // Clear error message, if any
   errorMessage.value = null;
 
   try {
-    // Sign in user with email and password
+    // Attempt to sign in user using Supabase client
     const { error } = await client.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
 
-    // Display error message if sign-in fails
+    // Set error message, if authentication fails
     if (error) {
       errorMessage.value = error.message;
     }
   } catch (err: any) {
-    // Handle unexpected errors
+    // Set error message, if there's an error during sign-in process
     errorMessage.value = err.message;
   } finally {
-    // Set loading state to false after successful sign-in
+    // Set loading state to false after completing the sign-in process
     loading.value = false;
   }
 }
 </script>
 
 <template>
-  <!-- Login form container -->
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div
       class="bg-white rounded-3xl p-8 shadow-xl w-full sm:max-w-md text-gray-800"
@@ -103,7 +101,7 @@ async function signInWithEmail() {
         Вхід
       </h2>
 
-      <!-- Login form -->
+      <!-- Sign-in form with email and password fields -->
       <form @submit.prevent="signInWithEmail" class="space-y-6">
         <div>
           <label
@@ -137,12 +135,12 @@ async function signInWithEmail() {
           />
         </div>
 
-        <!-- Display error message if sign-in fails -->
+        <!-- Display error message, if any -->
         <p v-if="errorMessage" class="text-red-600 text-sm text-center">
           {{ errorMessage }}
         </p>
 
-        <!-- Sign in button with loading state indicator -->
+        <!-- Submit button with loading state and default text -->
         <button
           type="submit"
           :disabled="loading"

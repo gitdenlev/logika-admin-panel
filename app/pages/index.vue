@@ -11,7 +11,7 @@ useHead({
     },
     {
       property: "og:title",
-      content: "Logika Admin Panel - Управління студентами",
+      content: "Logika Invest - Управління студентами",
     },
     {
       property: "og:description",

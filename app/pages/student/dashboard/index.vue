@@ -249,7 +249,7 @@
             <p
               class="font-semibold text-gray-600 dark:text-gray-300 mb-2 text-xl transition-colors duration-200"
             >
-              Твій внесок складає:
+              Твій місячний внесок:
               <span
                 class="flex items-center gap-1 text-[#7B68EE] dark:text-[#8B7EFF] text-2xl transition-colors duration-200"
                 >{{ armyDonation.current }} <NuxtImg src="/lgk.svg" width="20"

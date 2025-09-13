@@ -13,7 +13,7 @@ async function generateCommitMessage(diffText) {
   const prompt = `${context}\n\nGit diff:\n${diffText}`;
 
   const response = await ollama.chat({
-    model: "llama3.2:latest",
+    model: "gemma3:4b",
     messages: [{ role: "user", content: prompt }],
   });
 

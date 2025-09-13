@@ -19,7 +19,7 @@ async function loadPrompt(templatePath) {
 // Generate comments for a given code snippet
 async function generateComment(codeSnippet) {
   const basePrompt = await loadPrompt(
-    "./scripts/generate-comments/context.txt"
+    "./scripts/generate-comments/CONTEXT.md"
   );
 
   const prompt = `${basePrompt}  Add comments to the following code:\n${codeSnippet}`;
