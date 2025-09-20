@@ -28,4 +28,15 @@ export default defineNuxtConfig({
       exclude: ["/login"],
     },
   },
+  app: {
+    head: {
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: "/logika-invest-logo.svg",
+        },
+      ],
+    },
+  },
 });
