@@ -55,7 +55,7 @@ const sidebarItems = [
     icon: "ant-design:swap-outlined",
   },
   { title: "Вішліст", link: "/student/wishlist", icon: "ph:heart-fill" },
-  { title: "Магазин", link: "/student/store", iicon: "lucide:store" },
+  { title: "Магазин", link: "/student/store", icon: "lucide:store" },
   {
     title: "Досягнення",
     link: "/student/achievement",

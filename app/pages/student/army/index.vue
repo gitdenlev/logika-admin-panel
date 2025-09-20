@@ -205,11 +205,17 @@
 
 <script setup lang="ts">
 useHead({
-  title: "Армія",
+  title: "Logika Invest – Армія та досягнення дітей",
   meta: [
     {
       name: "description",
-      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+      content:
+        "Переглядайте статистику та досягнення в Армії Logika Invest. Слідкуйте за прогресом, рейтингом та активностями вашої дитини!",
+    },
+    {
+      name: "keywords",
+      content:
+        "Logika Invest, армія, донат, ЗСУ, бали, прогрес, акаунт дитини",
     },
     { name: "robots", content: "index, follow" },
   ],

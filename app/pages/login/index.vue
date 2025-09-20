@@ -23,19 +23,19 @@ useHead({
   meta: [
     {
       name: "description",
-      content: "Сторінка входу для адміністративної панелі управління студентами.",
+      content: "Сторінка входу до системи Logika Invest.",
     },
     {
       property: "og:title",
-      content: "Вхід до системи - Адмін Панель",
+      content: "Вхід до системи - Logika Invest.",
     },
     {
       property: "og:description",
-      content: "Сторінка входу для адміністративної.panель управління студентів.",
+      content: "Авторизація користувачів Logika Invest.",
     },
     {
       name: "keywords",
-      content: "вхід, логін, адміністратор,.panель, студенти, Supabase, Nuxt.js",
+      content: "вхід, логін, користувач, студенти, Logika Invest",
     },
   ],
   
@@ -44,7 +44,7 @@ useHead({
     {
       rel: "icon",
       type: "image/x-icon",
-      href: "/logika-panel.svg",
+      href: "/logika-invest-logo.svg",
     },
   ],
 });

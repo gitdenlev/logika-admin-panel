@@ -128,11 +128,27 @@
 
 <script setup lang="ts">
 useHead({
-  title: "Вішліст",
+  title: "Logika Invest – Вішліст",
   meta: [
     {
       name: "description",
-      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+      content: "Список бажаних товарів та послуг у системі Logika Invest.",
+    },
+    {
+      property: "og:title",
+      content: "Вішліст – Logika Invest",
+    },
+    {
+      property: "og:description",
+      content: "Зберігайте бажані товари та послуги у вашому вішлісті Logika Invest.",
+    },
+    {
+      property: "og:image",
+      content: "/logika-invest-logo.svg",
+    },
+    {
+      name: "keywords",
+      content: "Logika Invest, вішліст, список бажань, товари, послуги",
     },
     { name: "robots", content: "index, follow" },
   ],
@@ -141,6 +157,7 @@ useHead({
     { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
   ],
 });
+
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useSupabaseUser, useSupabaseClient } from "#imports";

@@ -35,11 +35,17 @@ import { ref, computed } from "vue";
 import { useAsyncData } from "#app";
 
 useHead({
-  title: "Рейтинг",
+  title: "Logika Invest – Рейтинг",
   meta: [
     {
       name: "description",
-      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+      content:
+        "Переглядайте свій рейтинг та досягнення у Logika Invest. Дивіться, скільки балів ви заробили, порівнюйте результати та слідкуйте за прогресом!",
+    },
+    {
+      name: "keywords",
+      content:
+        "Logika Invest, рейтинг, досягнення, бали, прогрес, акаунт дитини",
     },
     { name: "robots", content: "index, follow" },
   ],

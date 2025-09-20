@@ -197,9 +197,28 @@
 
 <script setup lang="ts">
 useHead({
-  title: "Транзакції",
+  title: "Logika Invest – Транзакції",
   meta: [
-    { name: "description", content: "транзакції" },
+    {
+      name: "description",
+      content: "Переглядайте історію своїх транзакцій у Logika Invest.",
+    },
+    {
+      property: "og:title",
+      content: "Транзакції – Logika Invest",
+    },
+    {
+      property: "og:description",
+      content: "Історія транзакцій та фінансових операцій у Logika Invest.",
+    },
+    {
+      property: "og:image",
+      content: "/logika-invest-logo.svg",
+    },
+    {
+      name: "keywords",
+      content: "Logika Invest, транзакції, фінансові операції, історія платежів",
+    },
     { name: "robots", content: "index, follow" },
   ],
   link: [
@@ -207,6 +226,7 @@ useHead({
     { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
   ],
 });
+
 import { ref, onMounted, watch, computed } from "vue";
 import { useSupabaseUser, useSupabaseClient } from "#imports";
 import JSConfetti from "js-confetti";

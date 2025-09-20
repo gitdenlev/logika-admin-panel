@@ -231,11 +231,27 @@
 
 <script setup lang="ts">
 useHead({
-  title: "Магазин",
+  title: "Logika Invest – Магазин",
   meta: [
     {
       name: "description",
-      content: "Статистика, рейтинг, досягнення та магазини ЛКГ",
+      content: "Магазин Logika Invest: переглядайте та купуйте доступні товари й послуги.",
+    },
+    {
+      property: "og:title",
+      content: "Магазин – Logika Invest",
+    },
+    {
+      property: "og:description",
+      content: "Обирайте товари та послуги у магазині Logika Invest.",
+    },
+    {
+      property: "og:image",
+      content: "/logika-invest-logo.svg",
+    },
+    {
+      name: "keywords",
+      content: "Logika Invest, магазин, товари, послуги, покупки",
     },
     { name: "robots", content: "index, follow" },
   ],
@@ -244,6 +260,7 @@ useHead({
     { rel: "apple-touch-icon", href: "/logika-invest-logo.svg" },
   ],
 });
+
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useSupabaseUser, useSupabaseClient } from "#imports";
