@@ -1,4 +1,5 @@
 import { ref } from "vue";
+
 export const products = ref([
   {
     name: "Браслет",
@@ -6,6 +7,7 @@ export const products = ref([
     description: "Стильний браслет із логотипом школи.",
     icon: "game-icons:ring",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Брелок",
@@ -13,6 +15,7 @@ export const products = ref([
     description: "Маленький брелок для ключів.",
     icon: "iconoir:rings",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Наліпки",
@@ -20,6 +23,7 @@ export const products = ref([
     description: "Набір яскравих наліпок для вашого ноутбука чи блокнота.",
     icon: "ph:sticker-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Ручка/олівець",
@@ -27,6 +31,7 @@ export const products = ref([
     description: "Брендована ручка або олівець для успішного навчання.",
     icon: "ph:pencil-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Зошит",
@@ -34,6 +39,7 @@ export const products = ref([
     description: "Якісний зошит для нотаток та ідей.",
     icon: "solar:notebook-minimalistic-linear",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Значок",
@@ -41,6 +47,7 @@ export const products = ref([
     description: "Металевий значок із символом вашого курсу.",
     icon: "ph:circle-fill",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Гумки для стирання",
@@ -48,6 +55,7 @@ export const products = ref([
     description: "Пара гумок для стирання помилок.",
     icon: "vaadin:elastic",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Попсокет",
@@ -55,6 +63,7 @@ export const products = ref([
     description: "Зручний попсокет для телефону.",
     icon: "icon-park-outline:spinning-top",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Підставка під телефон",
@@ -62,6 +71,7 @@ export const products = ref([
     description: "Зручна підставка для перегляду відео на телефоні.",
     icon: "material-symbols:nest-cam-stand",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Шкарпетки",
@@ -69,6 +79,7 @@ export const products = ref([
     description: "Фірмові шкарпетки Logika. Яскраві та зручні.",
     icon: "ph:sock-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Пенал",
@@ -76,6 +87,7 @@ export const products = ref([
     description: "Практичний пенал для зберігання канцелярії.",
     icon: "solar:airbuds-case-bold",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Пляшка",
@@ -83,6 +95,7 @@ export const products = ref([
     description: "Стильна пляшка для води, щоб завжди мати гідратацію.",
     icon: "material-symbols:water-bottle-outline-rounded",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Килимок для мишки",
@@ -90,6 +103,7 @@ export const products = ref([
     description: "Якісний килимок для мишки з ексклюзивним дизайном.",
     icon: "ph:mouse-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Бананка",
@@ -97,6 +111,7 @@ export const products = ref([
     description: "Зручна бананка для найнеобхідніших речей.",
     icon: "game-icons:school-bag",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Футболка",
@@ -104,6 +119,7 @@ export const products = ref([
     description: "Класична футболка з логотипом школи.",
     icon: "ph:t-shirt-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Парасолька",
@@ -111,6 +127,7 @@ export const products = ref([
     description: "Фірмова парасолька для захисту від негоди.",
     icon: "ph:umbrella-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Навушники",
@@ -118,6 +135,7 @@ export const products = ref([
     description: "Якісні бездротові навушники для музики та навчання.",
     icon: "ph:headphones-duotone",
     isInWishlist: false,
+    inStock: true,
   },
   {
     name: "Музична колонка",
@@ -125,6 +143,7 @@ export const products = ref([
     description: "Портативна колонка для улюбленої музики.",
     icon: "akar-icons:music-album-fill",
     isInWishlist: false,
+    inStock: false, // Ще в дорозі
   },
   {
     name: "Знижка 30% на перший місяць",
@@ -132,5 +151,6 @@ export const products = ref([
     description: "Приємний бонус для продовження навчання.",
     icon: "ph:percent-duotone",
     isInWishlist: false,
+    inStock: true,
   },
 ]);

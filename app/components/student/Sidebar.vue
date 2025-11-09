@@ -70,7 +70,7 @@ const sidebarItems = [
     title: "Армія",
     link: "/student/army",
     icon: "fluent-emoji-high-contrast:military-helmet",
-  },
+  }
 ];
 
 const route = useRoute();
